@@ -58,14 +58,9 @@ func run(c *cli.Context) error {
 		return fmt.Errorf("failed to evaluate licenses: %w", err)
 	}
 
-	if jsonOutput := c.String("json"); jsonOutput != "" {
-		f, err := os.Create(jsonOutput)
-		if err != nil {
-			return fmt.Errorf("failed to create file for json output: %w", err)
-		}
-		defer f.Close()
-		if err := json.NewEncoder(f).Encode(results); err != nil {
-			return fmt.Errorf("failed to write JSON: %w", err)
+	if jsonPath := c.String("json"); jsonPath != "" {
+		if err := writeJSON(jsonPath, results); err != nil {
+			return fmt.Errorf("failed to write json: %w", err)
 		}
 	}
 
@@ -94,4 +89,16 @@ func parseConfig(path string) (scan.Config, error) {
 		}
 	}
 	return conf, nil
+}
+
+func writeJSON(path string, results []scan.Result) error {
+	f, err := os.Create(path)
+	if err != nil {
+		return fmt.Errorf("failed to create file for json output: %w", err)
+	}
+	defer f.Close()
+	if err := json.NewEncoder(f).Encode(results); err != nil {
+		return fmt.Errorf("json encode failed: %w", err)
+	}
+	return nil
 }
