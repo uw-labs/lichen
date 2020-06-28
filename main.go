@@ -23,6 +23,7 @@ const tmpl = `{{range .}}
 func main() {
 	a := &cli.App{
 		Name: "golly",
+		Usage: "evaluate module dependencies from go compiled binaries",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "config",
@@ -47,6 +48,10 @@ func main() {
 }
 
 func run(c *cli.Context) error {
+	if c.NArg() == 0 {
+		return cli.ShowAppHelp(c)
+	}
+
 	f := termenv.TemplateFuncs(termenv.ColorProfile())
 	output, err := template.New("output").Funcs(f).Parse(c.String("template"))
 	if err != nil {
