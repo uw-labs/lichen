@@ -17,7 +17,7 @@ func (r Result) Allowed() bool {
 	return r.Decision == DecisionAllowed
 }
 
-func (r Result) Explain() string {
+func (r Result) ExplainDecision() string {
 	switch r.Decision {
 	case DecisionAllowed:
 		return "allowed"

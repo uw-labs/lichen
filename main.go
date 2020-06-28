@@ -3,19 +3,21 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"io/ioutil"
 	"log"
 	"os"
 
 	"github.com/hashicorp/go-multierror"
+	"github.com/muesli/termenv"
 	"github.com/urfave/cli/v2"
 	"github.com/utilitywarehouse/golly/internal/scan"
 	"gopkg.in/yaml.v2"
+	"text/template"
 )
 
 const tmpl = `{{range .}}
-{{- .Module.Path}}: {{range $i, $_ := .Module.Licenses}}{{if $i}}, {{end}}{{.Name}}{{end}} ({{.Explain}})
+{{- .Module.Path}}: {{range $i, $_ := .Module.Licenses}}{{if $i}}, {{end}}{{.Name}}{{end}} 
+{{- if .Allowed}} ({{ Color "#00ff00" .ExplainDecision}}){{else}} ({{ Color "#ff0000" .ExplainDecision}}){{end}}
 {{end}}`
 
 func main() {
@@ -45,7 +47,8 @@ func main() {
 }
 
 func run(c *cli.Context) error {
-	output, err := template.New("output").Parse(c.String("template"))
+	f := termenv.TemplateFuncs(termenv.ColorProfile())
+	output, err := template.New("output").Funcs(f).Parse(c.String("template"))
 	if err != nil {
 		return err
 	}
