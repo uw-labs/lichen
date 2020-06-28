@@ -14,7 +14,9 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const tmpl = `{{range .}}{{.Module.Path}}: {{range $i, $_ := .Module.Licenses}}{{if $i}}, {{end}}{{.Name}}{{end}} ({{.Explain}}){{end}}`
+const tmpl = `{{range .}}
+{{- .Module.Path}}: {{range $i, $_ := .Module.Licenses}}{{if $i}}, {{end}}{{.Name}}{{end}} ({{.Explain}})
+{{end}}`
 
 func main() {
 	a := &cli.App{
