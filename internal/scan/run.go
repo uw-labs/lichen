@@ -112,7 +112,7 @@ func evaluate(conf Config, binaries []model.Binary, modules []model.Module) []Re
 				path:    mod.Path,
 				license: lic.Name,
 			}
-			if !permitted[lic.Name] && !ignore[pl] {
+			if len(permitted) > 0 && !permitted[lic.Name] && !ignore[pl] {
 				res.Decision = DecisionNotAllowedLicenseNotPermitted
 				res.NotPermitted = append(res.NotPermitted, lic.Name)
 			}
