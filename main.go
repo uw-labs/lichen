@@ -76,7 +76,7 @@ func run(c *cli.Context) error {
 	var rErr error
 	for _, res := range results {
 		if !res.Allowed() {
-			rErr = multierror.Append(rErr, fmt.Errorf("%s not allowed", res.Module.Path))
+			rErr = multierror.Append(rErr, fmt.Errorf("%s: %s", res.Module.Path, res.ExplainDecision()))
 		}
 	}
 	return rErr
