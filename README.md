@@ -54,7 +54,7 @@ Run ```lichen --help``` for further information on flags.
 We can run lichen on itself:
 
 ```
-$ lichen /usr/local/bin/lichen
+$ lichen $GOPATH/bin/lichen
 github.com/cpuguy83/go-md2man/v2: MIT (allowed)
 github.com/google/goterm: BSD-3-Clause (allowed)
 github.com/lucasb-eyer/go-colorful: MIT (allowed)
