@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -49,7 +50,8 @@ func main() {
 
 func run(c *cli.Context) error {
 	if c.NArg() == 0 {
-		return cli.ShowAppHelp(c)
+		_ = cli.ShowAppHelp(c)
+		return errors.New("path to at least one binary must be supplied")
 	}
 
 	f := termenv.TemplateFuncs(termenv.ColorProfile())
