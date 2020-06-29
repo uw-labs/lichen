@@ -1,6 +1,6 @@
-# golly
+# lichen
 
-CI friendly Go binary license checker
+Go binary license checker. Extracts module usage information from binaries and analyses their licenses.
 
 ## Features
 
@@ -15,7 +15,7 @@ CI friendly Go binary license checker
 ### Improvements over existing tooling
 
 - Some tools attempt to extract module use information from scanning code. This can be flawed, as transitive
-dependencies are not well represented (if at all). `golly` executes `go version -m [exes]` to obtain accurate module
+dependencies are not well represented (if at all). `lichen` executes `go version -m [exes]` to obtain accurate module
 usage information; only those that are required at compile time will be included. Also note that 
 [rsc/goversion](https://github.com/rsc/goversion) has been avoided due to known issues in relation to binaries compiled
 with CGO enabled, and a lack of development activity.
@@ -23,38 +23,38 @@ with CGO enabled, and a lack of development activity.
 be flawed: the API only returns license details obtained from the HEAD of the `master` branch of a given repository. 
 This also typically requires a GitHub API token to be available, as rate-limiting will kick in quite quickly. The
 GitHub API license detection doesn't offer any significant advantages; it itself simply uses 
-[licensee/licensee](https://github.com/licensee/licensee) for license checking. `golly` does not use the GitHub API at
+[licensee/licensee](https://github.com/licensee/licensee) for license checking. `lichen` does not use the GitHub API at
 all.
 - In some instances, existing tools will clone the repository relating to the module. Often this is suffers from the
 same flaws as hitting the GitHub API, as the master branch ends up being inspected. Furthermore, some module URLs do
 not easily map to a git repository, resulting in the need for manual mapping in some instances. Finally, this process
-has a tendency to be slow. `golly` takes advantage of Go tooling to retrieve the relevant file(s) in an accurate and 
+has a tendency to be slow. `lichen` takes advantage of Go tooling to retrieve the relevant file(s) in an accurate and 
 time effective manner - `go mod download` is executed, and the local copy of the module is inspected for license
 information.
 
 ## Install
 
 ```
-GO111MODULE=on go get github.com/utilitywarehouse/golly
+GO111MODULE=on go get github.com/utilitywarehouse/lichen
 ```
 
 ## Usage
 
-By default `golly` simply prints license information. A path to at least one Go compiled binary must be supplied. 
+By default `lichen` simply prints license information. A path to at least one Go compiled binary must be supplied. 
 Permitted licenses can be configured, along with overrides and exceptions (see [Config](#Config)).
 
 ```
-golly --config=path/to/golly.yaml [binary ...]
+lichen --config=path/to/lichen.yaml [binary ...]
 ```
 
-Run ```golly --help``` for further information on flags.
+Run ```lichen --help``` for further information on flags.
 
 ## Example
 
-We can run golly on itself:
+We can run lichen on itself:
 
 ```
-$ golly /usr/local/bin/golly
+$ lichen /usr/local/bin/lichen
 github.com/cpuguy83/go-md2man/v2: MIT (allowed)
 github.com/google/goterm: BSD-3-Clause (allowed)
 github.com/lucasb-eyer/go-colorful: MIT (allowed)

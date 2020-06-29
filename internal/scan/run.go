@@ -3,9 +3,9 @@ package scan
 import (
 	"context"
 
-	"github.com/utilitywarehouse/golly/internal/dep"
-	"github.com/utilitywarehouse/golly/internal/license"
-	"github.com/utilitywarehouse/golly/internal/model"
+	"github.com/utilitywarehouse/lichen/internal/dep"
+	"github.com/utilitywarehouse/lichen/internal/license"
+	"github.com/utilitywarehouse/lichen/internal/model"
 )
 
 const defaultThreshold = 0.80

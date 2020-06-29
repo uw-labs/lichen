@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/muesli/termenv"
 	"github.com/urfave/cli/v2"
-	"github.com/utilitywarehouse/golly/internal/scan"
+	"github.com/utilitywarehouse/lichen/internal/scan"
 	"gopkg.in/yaml.v2"
 	"text/template"
 )
@@ -23,7 +23,7 @@ const tmpl = `{{range .}}
 
 func main() {
 	a := &cli.App{
-		Name: "golly",
+		Name: "lichen",
 		Usage: "evaluate module dependencies from go compiled binaries",
 		Flags: []cli.Flag{
 			&cli.StringFlag{

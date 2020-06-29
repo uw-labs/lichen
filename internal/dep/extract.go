@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/utilitywarehouse/golly/internal/model"
+	"github.com/utilitywarehouse/lichen/internal/model"
 )
 
 func Extract(ctx context.Context, paths ...string) ([]model.Binary, error) {

@@ -3,7 +3,7 @@ package scan
 import (
 	"fmt"
 
-	"github.com/utilitywarehouse/golly/internal/model"
+	"github.com/utilitywarehouse/lichen/internal/model"
 )
 
 type Result struct {

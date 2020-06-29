@@ -1,4 +1,4 @@
-module github.com/utilitywarehouse/golly
+module github.com/utilitywarehouse/lichen
 
 go 1.14
 

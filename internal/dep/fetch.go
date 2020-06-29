@@ -8,7 +8,7 @@ import (
 	"io"
 	"os/exec"
 
-	"github.com/utilitywarehouse/golly/internal/model"
+	"github.com/utilitywarehouse/lichen/internal/model"
 )
 
 func Fetch(ctx context.Context, refs []model.Reference) ([]model.Module, error) {
