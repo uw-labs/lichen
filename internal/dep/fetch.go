@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os/exec"
@@ -33,7 +34,7 @@ func Fetch(ctx context.Context, refs []model.Reference) ([]model.Module, error) 
 	for {
 		var m model.Module
 		if err := dec.Decode(&m); err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			return nil, err
