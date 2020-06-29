@@ -23,8 +23,8 @@ with CGO enabled, and a lack of development activity.
 be flawed: the API only returns license details obtained from the HEAD of the `master` branch of a given repository. 
 This also typically requires a GitHub API token to be available, as rate-limiting will kick in quite quickly. The
 GitHub API license detection doesn't offer any significant advantages; it itself simply uses 
-[licensee/licensee](https://github.com/licensee/licensee) for local license checking. `golly` does not use the GitHub
-API at all.
+[licensee/licensee](https://github.com/licensee/licensee) for license checking. `golly` does not use the GitHub API at
+all.
 - In some instances, existing tools will clone the repository relating to the module. Often this is suffers from the
 same flaws as hitting the GitHub API, as the master branch ends up being inspected. Furthermore, some module URLs do
 not easily map to a git repository, resulting in the need for manual mapping in some instances. Finally, this process
@@ -76,6 +76,10 @@ gopkg.in/yaml.v2: Apache-2.0, MIT (allowed)
 Example:
 
 ```yaml
+# minimum confidence percentage used during license classification
+threshold: .80
+
+# all permitted licenses
 allow:
   - "MIT"
   - "Apache-2.0"
@@ -87,10 +91,12 @@ allow:
   - "ISC"
   - "PostgreSQL"
 
+# overrides for cases where a license cannot be detected
 override:
   - path: "github.com/abc/xyz"
     licenses: ["MIT"] # doesn't have a LICENSE file but it's in the README
 
+# exceptions for violations
 exceptions:
   - path: "github.com/foo/bar"
     licenses: ["LGPL-3.0"] # this is our own software

@@ -8,6 +8,8 @@ import (
 	"github.com/utilitywarehouse/golly/internal/model"
 )
 
+const defaultThreshold = 0.80
+
 func Run(ctx context.Context, conf Config, paths ...string) ([]Result, error) {
 	binaries, err := dep.Extract(ctx, paths...)
 	if err != nil {
@@ -19,7 +21,11 @@ func Run(ctx context.Context, conf Config, paths ...string) ([]Result, error) {
 		return nil, err
 	}
 
-	modules, err = license.Resolve(modules, .75)
+	threshold := defaultThreshold
+	if conf.Threshold != nil {
+		threshold = *conf.Threshold
+	}
+	modules, err = license.Resolve(modules, threshold)
 	if err != nil {
 		return nil, err
 	}
