@@ -1,4 +1,4 @@
-# lichen
+# lichen 🍃
 
 Go binary license checker. Extracts module usage information from binaries and analyses their licenses.
 
