@@ -7,13 +7,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"text/template"
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/muesli/termenv"
 	"github.com/urfave/cli/v2"
 	"github.com/utilitywarehouse/lichen/internal/scan"
 	"gopkg.in/yaml.v2"
-	"text/template"
 )
 
 const tmpl = `{{range .}}
@@ -23,7 +23,7 @@ const tmpl = `{{range .}}
 
 func main() {
 	a := &cli.App{
-		Name: "lichen",
+		Name:  "lichen",
 		Usage: "evaluate module dependencies from go compiled binaries",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
