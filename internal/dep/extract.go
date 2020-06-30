@@ -3,6 +3,8 @@ package dep
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -24,11 +26,17 @@ func goVersion(ctx context.Context, paths []string) (string, error) {
 		return "", err
 	}
 
+	tempDir, err := ioutil.TempDir("", "lichen")
+	if err != nil {
+		return "", fmt.Errorf("failed to create temp directory: %w", err)
+	}
+	defer os.Remove(tempDir)
+
 	args := []string{"version", "-m"}
 	args = append(args, paths...)
 
 	cmd := exec.CommandContext(ctx, goBin, args...)
-
+	cmd.Dir = tempDir
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err

@@ -7,6 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"os"
 	"os/exec"
 
 	"github.com/utilitywarehouse/lichen/internal/model"
@@ -18,12 +20,19 @@ func Fetch(ctx context.Context, refs []model.Reference) ([]model.Module, error) 
 		return nil, err
 	}
 
+	tempDir, err := ioutil.TempDir("", "lichen")
+	if err != nil {
+		return nil, fmt.Errorf("failed to create temp directory: %w", err)
+	}
+	defer os.Remove(tempDir)
+
 	args := []string{"mod", "download", "-json"}
 	for _, mod := range refs {
 		args = append(args, fmt.Sprintf("%s@%s", mod.Path, mod.Version))
 	}
 
 	cmd := exec.CommandContext(ctx, goBin, args...)
+	cmd.Dir = tempDir
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch: %w (output: %s)", err, string(out))
