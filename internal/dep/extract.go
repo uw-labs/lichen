@@ -17,7 +17,14 @@ func Extract(ctx context.Context, paths ...string) ([]model.Binary, error) {
 		return nil, err
 	}
 
-	return parseOutput(output)
+	parsed, err := parseOutput(output)
+	if err != nil {
+		return nil, err
+	}
+	if len(parsed) == 0 {
+		return nil, fmt.Errorf("could not extract module information from binaries: %v", paths)
+	}
+	return parsed, nil
 }
 
 func goVersion(ctx context.Context, paths []string) (string, error) {
