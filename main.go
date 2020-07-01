@@ -28,17 +28,20 @@ func main() {
 		Usage: "evaluate module dependencies from go compiled binaries",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:  "config",
-				Usage: "path to config file",
+				Name:    "config",
+				Aliases: []string{"c"},
+				Usage:   "path to config file",
 			},
 			&cli.StringFlag{
-				Name:  "template",
-				Usage: "template for writing out each module and resolved licenses",
-				Value: tmpl,
+				Name:    "template",
+				Aliases: []string{"t"},
+				Usage:   "template for writing out each module and resolved licenses",
+				Value:   tmpl,
 			},
 			&cli.StringFlag{
-				Name:  "json",
-				Usage: "write JSON results to the supplied file",
+				Name:    "json",
+				Aliases: []string{"j"},
+				Usage:   "write JSON results to the supplied file",
 			},
 		},
 		Action: run,
