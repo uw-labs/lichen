@@ -18,7 +18,7 @@ import (
 )
 
 const tmpl = `{{range .}}
-{{- .Module.Path}}: {{range $i, $_ := .Module.Licenses}}{{if $i}}, {{end}}{{.Name}}{{end}} 
+{{- .Module.Path}}@{{.Module.Version}}: {{range $i, $_ := .Module.Licenses}}{{if $i}}, {{end}}{{.Name}}{{end}} 
 {{- if .Allowed}} ({{ Color "#00ff00" .ExplainDecision}}){{else}} ({{ Color "#ff0000" .ExplainDecision}}){{end}}
 {{end}}`
 
