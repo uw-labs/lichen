@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"text/template"
 
 	"github.com/hashicorp/go-multierror"
@@ -65,7 +66,12 @@ func run(c *cli.Context) error {
 		return fmt.Errorf("invalid config: %w", err)
 	}
 
-	results, err := scan.Run(c.Context, conf, c.Args().Slice()...)
+	paths, err := absolutePaths(c.Args().Slice())
+	if err != nil {
+		return fmt.Errorf("invalid arguments: %w", err)
+	}
+
+	results, err := scan.Run(c.Context, conf, paths...)
 	if err != nil {
 		return fmt.Errorf("failed to evaluate licenses: %w", err)
 	}
@@ -101,6 +107,18 @@ func parseConfig(path string) (scan.Config, error) {
 		}
 	}
 	return conf, nil
+}
+
+func absolutePaths(paths []string) ([]string, error) {
+	mapped := make([]string, len(paths))
+	for i, path := range paths {
+		abs, err := filepath.Abs(path)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get absolute path: %w", err)
+		}
+		mapped[i] = abs
+	}
+	return mapped, nil
 }
 
 func writeJSON(path string, results []scan.Result) error {
