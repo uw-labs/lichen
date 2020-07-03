@@ -35,7 +35,7 @@ information.
 ## Install
 
 ```
-GO111MODULE=on go get github.com/utilitywarehouse/lichen
+GO111MODULE=on go get github.com/uw-labs/lichen
 ```
 
 ## Usage

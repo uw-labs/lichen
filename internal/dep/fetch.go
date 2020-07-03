@@ -11,7 +11,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/utilitywarehouse/lichen/internal/model"
+	"github.com/uw-labs/lichen/internal/model"
 )
 
 func Fetch(ctx context.Context, refs []model.Reference) ([]model.Module, error) {

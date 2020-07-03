@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/muesli/termenv"
 	"github.com/urfave/cli/v2"
-	"github.com/utilitywarehouse/lichen/internal/scan"
+	"github.com/uw-labs/lichen/internal/scan"
 	"gopkg.in/yaml.v2"
 )
 

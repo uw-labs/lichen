@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/utilitywarehouse/lichen/internal/model"
+	"github.com/uw-labs/lichen/internal/model"
 )
 
 func Extract(ctx context.Context, paths ...string) ([]model.Binary, error) {

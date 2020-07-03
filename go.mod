@@ -1,4 +1,4 @@
-module github.com/utilitywarehouse/lichen
+module github.com/uw-labs/lichen
 
 go 1.14
 

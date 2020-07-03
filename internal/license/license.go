@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/google/licenseclassifier"
-	"github.com/utilitywarehouse/lichen/internal/model"
+	"github.com/uw-labs/lichen/internal/model"
 )
 
 type ResolveConfig struct {
