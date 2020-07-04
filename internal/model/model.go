@@ -1,5 +1,7 @@
 package model
 
+import "fmt"
+
 type Binary struct {
 	Path string
 	Refs []Reference
@@ -14,6 +16,10 @@ type Module struct {
 type Reference struct {
 	Path    string
 	Version string
+}
+
+func (r Reference) String() string {
+	return fmt.Sprintf("%s@%s", r.Path, r.Version)
 }
 
 type License struct {
