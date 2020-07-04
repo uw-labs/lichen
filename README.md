@@ -10,7 +10,7 @@ Go binary license checker. Extracts module usage information from binaries and a
 - Multi-license usage is covered out the box.
 - Local license checking using [google/licenseclassifier](https://github.com/google/licenseclassifier).
 - Customisable output via text/template.
-- JSON output for further analysis for transforming into CSV, XLSX, etc.
+- JSON output for further analysis and transforming into CSV, XLSX, etc.
 
 ### Improvements over existing tooling
 
