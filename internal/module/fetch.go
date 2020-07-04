@@ -1,4 +1,4 @@
-package dep
+package module
 
 import (
 	"bytes"

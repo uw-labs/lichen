@@ -3,20 +3,20 @@ package scan
 import (
 	"context"
 
-	"github.com/uw-labs/lichen/internal/dep"
 	"github.com/uw-labs/lichen/internal/license"
 	"github.com/uw-labs/lichen/internal/model"
+	"github.com/uw-labs/lichen/internal/module"
 )
 
 const defaultThreshold = 0.80
 
 func Run(ctx context.Context, conf Config, paths ...string) ([]Result, error) {
-	binaries, err := dep.Extract(ctx, paths...)
+	binaries, err := module.Extract(ctx, paths...)
 	if err != nil {
 		return nil, err
 	}
 
-	modules, err := dep.Fetch(ctx, uniqueModuleRefs(binaries))
+	modules, err := module.Fetch(ctx, uniqueModuleRefs(binaries))
 	if err != nil {
 		return nil, err
 	}
