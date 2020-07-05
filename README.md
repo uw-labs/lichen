@@ -103,3 +103,9 @@ exceptions:
   - path: "github.com/baz/xyz"
     licenses: ["CC-BY-SA-4.0"] # README.md + CONTRIBUTING.md are licensed under CC-BY-SA-4.0 (unused by us)
 ```
+
+## Caveat emptor
+
+Just as a linter cannot _guarantee_ working and correct code, this tool cannot guarantee dependencies and their licenses
+are determined with absolute correctness. `lichen` is designed to help catch cases that might fall through the net, but
+it is by no means a replacement for manual inspection and evaluation of dependencies.
