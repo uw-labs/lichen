@@ -17,7 +17,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const tmpl = `{{range .}}
+const tmpl = `{{range .Modules}}
 {{- .Module.Path}}@{{.Module.Version}}: {{range $i, $_ := .Module.Licenses}}{{if $i}}, {{end}}{{.Name}}{{end}} 
 {{- if .Allowed}} ({{ Color "#00ff00" .ExplainDecision}}){{else}} ({{ Color "#ff0000" .ExplainDecision}}){{end}}
 {{end}}`
@@ -74,25 +74,25 @@ func run(c *cli.Context) error {
 		return fmt.Errorf("invalid arguments: %w", err)
 	}
 
-	results, err := scan.Run(c.Context, conf, paths...)
+	summary, err := scan.Run(c.Context, conf, paths...)
 	if err != nil {
 		return fmt.Errorf("failed to evaluate licenses: %w", err)
 	}
 
 	if jsonPath := c.String("json"); jsonPath != "" {
-		if err := writeJSON(jsonPath, results); err != nil {
+		if err := writeJSON(jsonPath, summary); err != nil {
 			return fmt.Errorf("failed to write json: %w", err)
 		}
 	}
 
-	if err := output.Execute(os.Stdout, results); err != nil {
+	if err := output.Execute(os.Stdout, summary); err != nil {
 		return fmt.Errorf("failed to write results: %w", err)
 	}
 
 	var rErr error
-	for _, res := range results {
-		if !res.Allowed() {
-			rErr = multierror.Append(rErr, fmt.Errorf("%s: %s", res.Module.Path, res.ExplainDecision()))
+	for _, m := range summary.Modules {
+		if !m.Allowed() {
+			rErr = multierror.Append(rErr, fmt.Errorf("%s: %s", m.Module.Path, m.ExplainDecision()))
 		}
 	}
 	return rErr
@@ -124,13 +124,13 @@ func absolutePaths(paths []string) ([]string, error) {
 	return mapped, nil
 }
 
-func writeJSON(path string, results []scan.Result) error {
+func writeJSON(path string, summary scan.Summary) error {
 	f, err := os.Create(path)
 	if err != nil {
 		return fmt.Errorf("failed to create file for json output: %w", err)
 	}
 	defer f.Close()
-	if err := json.NewEncoder(f).Encode(results); err != nil {
+	if err := json.NewEncoder(f).Encode(summary); err != nil {
 		return fmt.Errorf("json encode failed: %w", err)
 	}
 	return nil

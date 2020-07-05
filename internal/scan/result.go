@@ -6,18 +6,23 @@ import (
 	"github.com/uw-labs/lichen/internal/model"
 )
 
-type Result struct {
-	Module       model.Module
-	Decision     Decision
-	NotPermitted []string `json:",omitempty"`
-	Binaries     []string
+type Summary struct {
+	Modules  []EvaluatedModule
+	Binaries []model.BuildInfo
 }
 
-func (r Result) Allowed() bool {
+type EvaluatedModule struct {
+	model.Module
+	Decision     Decision
+	NotPermitted []string `json:",omitempty"`
+	UsedBy       []string
+}
+
+func (r EvaluatedModule) Allowed() bool {
 	return r.Decision == DecisionAllowed
 }
 
-func (r Result) ExplainDecision() string {
+func (r EvaluatedModule) ExplainDecision() string {
 	switch r.Decision {
 	case DecisionAllowed:
 		return "allowed"

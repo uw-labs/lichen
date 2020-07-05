@@ -11,17 +11,17 @@ import (
 
 const defaultThreshold = 0.80
 
-func Run(ctx context.Context, conf Config, binPaths ...string) ([]Result, error) {
+func Run(ctx context.Context, conf Config, binPaths ...string) (Summary, error) {
 	// extract modules details from each supplied binary
 	binaries, err := module.Extract(ctx, binPaths...)
 	if err != nil {
-		return nil, err
+		return Summary{}, err
 	}
 
 	// fetch each module - this returns pertinent details, including the OS path to the module
 	modules, err := module.Fetch(ctx, uniqueModuleRefs(binaries))
 	if err != nil {
-		return nil, err
+		return Summary{}, err
 	}
 
 	// resolve licenses based on a minimum threshold
@@ -31,7 +31,7 @@ func Run(ctx context.Context, conf Config, binPaths ...string) ([]Result, error)
 	}
 	modules, err = license.Resolve(modules, threshold)
 	if err != nil {
-		return nil, err
+		return Summary{}, err
 	}
 
 	// apply any overrides, if configured
@@ -45,7 +45,10 @@ func Run(ctx context.Context, conf Config, binPaths ...string) ([]Result, error)
 		return results[i].Module.Path < results[j].Module.Path
 	})
 
-	return results, nil
+	return Summary{
+		Binaries: binaries,
+		Modules:  results,
+	}, nil
 }
 
 // uniqueModuleRefs returns all unique modules referenced by the supplied binaries
@@ -90,7 +93,7 @@ func applyOverrides(modules []model.Module, overrides []Override) []model.Module
 
 // evaluate inspects each module, checking that (a) license details could be determined, and (b) licenses
 // are permitted by the supplied configuration.
-func evaluate(conf Config, binaries []model.BuildInfo, modules []model.Module) []Result {
+func evaluate(conf Config, binaries []model.BuildInfo, modules []model.Module) []EvaluatedModule {
 	// build a map each module to binaries that reference them
 	binRefs := make(map[model.ModuleReference][]string, len(modules))
 	for _, bin := range binaries {
@@ -122,11 +125,11 @@ func evaluate(conf Config, binaries []model.BuildInfo, modules []model.Module) [
 	}
 
 	// check each module
-	results := make([]Result, 0, len(modules))
+	results := make([]EvaluatedModule, 0, len(modules))
 	for _, mod := range modules {
-		res := Result{
+		res := EvaluatedModule{
 			Module:   mod,
-			Binaries: binRefs[mod.ModuleReference],
+			UsedBy:   binRefs[mod.ModuleReference],
 			Decision: DecisionAllowed,
 		}
 		if len(mod.Licenses) == 0 {
