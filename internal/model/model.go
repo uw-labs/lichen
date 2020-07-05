@@ -3,22 +3,22 @@ package model
 import "fmt"
 
 type Binary struct {
-	Path string
-	Refs []Reference
+	Path       string
+	ModuleRefs []ModuleReference
 }
 
 type Module struct {
-	Reference
+	ModuleReference
 	Dir      string
 	Licenses []License
 }
 
-type Reference struct {
+type ModuleReference struct {
 	Path    string
 	Version string
 }
 
-func (r Reference) String() string {
+func (r ModuleReference) String() string {
 	return fmt.Sprintf("%s@%s", r.Path, r.Version)
 }
 

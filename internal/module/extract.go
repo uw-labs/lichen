@@ -77,7 +77,7 @@ func parseOutput(output string) ([]model.Binary, error) {
 			if len(parts) < 3 {
 				return nil, fmt.Errorf("invalid module: %s", l)
 			}
-			current.Refs = append(current.Refs, model.Reference{
+			current.ModuleRefs = append(current.ModuleRefs, model.ModuleReference{
 				Path:    parts[1],
 				Version: parts[2],
 			})

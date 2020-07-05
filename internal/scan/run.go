@@ -37,15 +37,15 @@ func Run(ctx context.Context, conf Config, paths ...string) ([]Result, error) {
 	return evaluate(conf, binaries, modules), nil
 }
 
-func uniqueModuleRefs(infos []model.Binary) []model.Reference {
-	unique := make(map[model.Reference]struct{})
+func uniqueModuleRefs(infos []model.Binary) []model.ModuleReference {
+	unique := make(map[model.ModuleReference]struct{})
 	for _, res := range infos {
-		for _, r := range res.Refs {
+		for _, r := range res.ModuleRefs {
 			unique[r] = struct{}{}
 		}
 	}
 
-	refs := make([]model.Reference, 0, len(unique))
+	refs := make([]model.ModuleReference, 0, len(unique))
 	for r := range unique {
 		refs = append(refs, r)
 	}
@@ -60,7 +60,7 @@ func applyOverrides(modules []model.Module, overrides []Override) []model.Module
 	}
 
 	for i, mod := range modules {
-		if repl, found := replacements[mod.Reference.Path]; found {
+		if repl, found := replacements[mod.ModuleReference.Path]; found {
 			mod.Licenses = make([]model.License, 0, len(repl))
 			for _, lic := range repl {
 				mod.Licenses = append(mod.Licenses, model.License{
@@ -76,9 +76,9 @@ func applyOverrides(modules []model.Module, overrides []Override) []model.Module
 }
 
 func evaluate(conf Config, binaries []model.Binary, modules []model.Module) []Result {
-	binRefs := make(map[model.Reference][]string, len(modules))
+	binRefs := make(map[model.ModuleReference][]string, len(modules))
 	for _, bin := range binaries {
-		for _, ref := range bin.Refs {
+		for _, ref := range bin.ModuleRefs {
 			binRefs[ref] = append(binRefs[ref], bin.Path)
 		}
 	}
@@ -107,7 +107,7 @@ func evaluate(conf Config, binaries []model.Binary, modules []model.Module) []Re
 	for _, mod := range modules {
 		res := Result{
 			Module:   mod,
-			Binaries: binRefs[mod.Reference],
+			Binaries: binRefs[mod.ModuleReference],
 			Decision: DecisionAllowed,
 		}
 		if len(mod.Licenses) == 0 {

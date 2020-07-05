@@ -15,7 +15,7 @@ import (
 	"github.com/uw-labs/lichen/internal/model"
 )
 
-func Fetch(ctx context.Context, refs []model.Reference) ([]model.Module, error) {
+func Fetch(ctx context.Context, refs []model.ModuleReference) ([]model.Module, error) {
 	goBin, err := exec.LookPath("go")
 	if err != nil {
 		return nil, err
@@ -61,10 +61,10 @@ func Fetch(ctx context.Context, refs []model.Reference) ([]model.Module, error) 
 	return modules, nil
 }
 
-func verifyFetched(fetched []model.Module, requested []model.Reference) (err error) {
-	fetchedRefs := make(map[model.Reference]struct{}, len(fetched))
+func verifyFetched(fetched []model.Module, requested []model.ModuleReference) (err error) {
+	fetchedRefs := make(map[model.ModuleReference]struct{}, len(fetched))
 	for _, module := range fetched {
-		fetchedRefs[module.Reference] = struct{}{}
+		fetchedRefs[module.ModuleReference] = struct{}{}
 	}
 	for _, ref := range requested {
 		if _, found := fetchedRefs[ref]; !found {
