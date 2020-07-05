@@ -10,11 +10,6 @@ import (
 	"github.com/uw-labs/lichen/internal/model"
 )
 
-type ResolveConfig struct {
-	Threshold float64
-	NumGo     int
-}
-
 func Resolve(modules []model.Module, threshold float64) ([]model.Module, error) {
 	lc, err := licenseclassifier.New(threshold)
 	if err != nil {
