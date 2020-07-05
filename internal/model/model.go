@@ -2,20 +2,22 @@ package model
 
 import "fmt"
 
-type Binary struct {
-	Path       string
-	ModuleRefs []ModuleReference
+type BuildInfo struct {
+	Path        string            // OS level absolute path to the binary this build info relates to
+	PackagePath string            // package path indicated by the build info, e.g. github.com/foo/bar/cmd/baz
+	ModulePath  string            // module path indicated by the build info, e.g. github.com/foo/bar
+	ModuleRefs  []ModuleReference // all modules that feature in the build info output
 }
 
 type Module struct {
-	ModuleReference
-	Dir      string
-	Licenses []License
+	ModuleReference           // reference (path & version)
+	Dir             string    // OS level absolute path to where the cached copy of the module is located
+	Licenses        []License // resolved licenses
 }
 
 type ModuleReference struct {
-	Path    string
-	Version string
+	Path    string // module path, e.g. github.com/foo/bar
+	Version string // module version (can take a variety of forms)
 }
 
 func (r ModuleReference) String() string {
@@ -23,6 +25,6 @@ func (r ModuleReference) String() string {
 }
 
 type License struct {
-	Name       string
-	Confidence float64
+	Name       string  // SPDX name of the license
+	Confidence float64 // confidence from license classification
 }

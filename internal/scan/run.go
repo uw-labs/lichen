@@ -49,7 +49,7 @@ func Run(ctx context.Context, conf Config, binPaths ...string) ([]Result, error)
 }
 
 // uniqueModuleRefs returns all unique modules referenced by the supplied binaries
-func uniqueModuleRefs(infos []model.Binary) []model.ModuleReference {
+func uniqueModuleRefs(infos []model.BuildInfo) []model.ModuleReference {
 	unique := make(map[model.ModuleReference]struct{})
 	for _, res := range infos {
 		for _, r := range res.ModuleRefs {
@@ -90,7 +90,7 @@ func applyOverrides(modules []model.Module, overrides []Override) []model.Module
 
 // evaluate inspects each module, checking that (a) license details could be determined, and (b) licenses
 // are permitted by the supplied configuration.
-func evaluate(conf Config, binaries []model.Binary, modules []model.Module) []Result {
+func evaluate(conf Config, binaries []model.BuildInfo, modules []model.Module) []Result {
 	// build a map each module to binaries that reference them
 	binRefs := make(map[model.ModuleReference][]string, len(modules))
 	for _, bin := range binaries {
