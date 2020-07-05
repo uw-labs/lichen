@@ -40,8 +40,8 @@ GO111MODULE=on go get github.com/uw-labs/lichen
 
 ## Usage
 
-By default `lichen` simply prints license information. A path to at least one Go compiled binary must be supplied. 
-Permitted licenses can be configured, along with overrides and exceptions (see [Config](#Config)).
+By default `lichen` simply prints each module with its respective license. A path to at least one Go compiled binary
+must be supplied. Permitted licenses can be configured, along with overrides and exceptions (see [Config](#Config)).
 
 ```
 lichen --config=path/to/lichen.yaml [binary ...]
@@ -55,20 +55,20 @@ We can run lichen on itself:
 
 ```
 $ lichen $GOPATH/bin/lichen
-github.com/cpuguy83/go-md2man/v2: MIT (allowed)
-github.com/google/goterm: BSD-3-Clause (allowed)
-github.com/lucasb-eyer/go-colorful: MIT (allowed)
-github.com/mattn/go-isatty: MIT (allowed)
-github.com/russross/blackfriday/v2: BSD-2-Clause (allowed)
-github.com/shurcooL/sanitized_anchor_name: MIT (allowed)
-github.com/sergi/go-diff: MIT (allowed)
-github.com/google/licenseclassifier: Apache-2.0 (allowed)
-github.com/hashicorp/errwrap: MPL-2.0 (allowed)
-github.com/urfave/cli/v2: MIT (allowed)
-github.com/hashicorp/go-multierror: MPL-2.0 (allowed)
-github.com/muesli/termenv: MIT (allowed)
-golang.org/x/sys: BSD-3-Clause (allowed)
-gopkg.in/yaml.v2: Apache-2.0, MIT (allowed)
+github.com/cpuguy83/go-md2man/v2@v2.0.0-20190314233015-f79a8a8ca69d: MIT (allowed)
+github.com/google/goterm@v0.0.0-20190703233501-fc88cf888a3f: BSD-3-Clause (allowed)
+github.com/google/licenseclassifier@v0.0.0-20200402202327-879cb1424de0: Apache-2.0 (allowed)
+github.com/hashicorp/errwrap@v1.0.0: MPL-2.0 (allowed)
+github.com/hashicorp/go-multierror@v1.1.0: MPL-2.0 (allowed)
+github.com/lucasb-eyer/go-colorful@v1.0.3: MIT (allowed)
+github.com/mattn/go-isatty@v0.0.12: MIT (allowed)
+github.com/muesli/termenv@v0.5.2: MIT (allowed)
+github.com/russross/blackfriday/v2@v2.0.1: BSD-2-Clause (allowed)
+github.com/sergi/go-diff@v1.0.0: MIT (allowed)
+github.com/shurcooL/sanitized_anchor_name@v1.0.0: MIT (allowed)
+github.com/urfave/cli/v2@v2.2.0: MIT (allowed)
+golang.org/x/sys@v0.0.0-20200116001909-b77594299b42: BSD-3-Clause (allowed)
+gopkg.in/yaml.v2@v2.3.0: Apache-2.0, MIT (allowed)
 ```
 
 ## Config
