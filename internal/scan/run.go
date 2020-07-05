@@ -2,6 +2,7 @@ package scan
 
 import (
 	"context"
+	"sort"
 
 	"github.com/uw-labs/lichen/internal/license"
 	"github.com/uw-labs/lichen/internal/model"
@@ -34,7 +35,12 @@ func Run(ctx context.Context, conf Config, paths ...string) ([]Result, error) {
 		modules = applyOverrides(modules, conf.Overrides)
 	}
 
-	return evaluate(conf, binaries, modules), nil
+	results := evaluate(conf, binaries, modules)
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].Module.Path < results[j].Module.Path
+	})
+
+	return results, nil
 }
 
 func uniqueModuleRefs(infos []model.Binary) []model.ModuleReference {
