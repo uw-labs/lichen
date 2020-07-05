@@ -11,17 +11,20 @@ import (
 
 const defaultThreshold = 0.80
 
-func Run(ctx context.Context, conf Config, paths ...string) ([]Result, error) {
-	binaries, err := module.Extract(ctx, paths...)
+func Run(ctx context.Context, conf Config, binPaths ...string) ([]Result, error) {
+	// extract modules details from each supplied binary
+	binaries, err := module.Extract(ctx, binPaths...)
 	if err != nil {
 		return nil, err
 	}
 
+	// fetch each module - this returns pertinent details, including the OS path to the module
 	modules, err := module.Fetch(ctx, uniqueModuleRefs(binaries))
 	if err != nil {
 		return nil, err
 	}
 
+	// resolve licenses based on a minimum threshold
 	threshold := defaultThreshold
 	if conf.Threshold != nil {
 		threshold = *conf.Threshold
@@ -31,10 +34,12 @@ func Run(ctx context.Context, conf Config, paths ...string) ([]Result, error) {
 		return nil, err
 	}
 
+	// apply any overrides, if configured
 	if len(conf.Overrides) > 0 {
 		modules = applyOverrides(modules, conf.Overrides)
 	}
 
+	// evaluate the modules and sort by path
 	results := evaluate(conf, binaries, modules)
 	sort.Slice(results, func(i, j int) bool {
 		return results[i].Module.Path < results[j].Module.Path
@@ -43,6 +48,7 @@ func Run(ctx context.Context, conf Config, paths ...string) ([]Result, error) {
 	return results, nil
 }
 
+// uniqueModuleRefs returns all unique modules referenced by the supplied binaries
 func uniqueModuleRefs(infos []model.Binary) []model.ModuleReference {
 	unique := make(map[model.ModuleReference]struct{})
 	for _, res := range infos {
@@ -59,6 +65,7 @@ func uniqueModuleRefs(infos []model.Binary) []model.ModuleReference {
 	return refs
 }
 
+// applyOverrides replaces license information
 func applyOverrides(modules []model.Module, overrides []Override) []model.Module {
 	replacements := make(map[string][]string, len(overrides))
 	for _, o := range overrides {
@@ -81,7 +88,10 @@ func applyOverrides(modules []model.Module, overrides []Override) []model.Module
 	return modules
 }
 
+// evaluate inspects each module, checking that (a) license details could be determined, and (b) licenses
+// are permitted by the supplied configuration.
 func evaluate(conf Config, binaries []model.Binary, modules []model.Module) []Result {
+	// build a map each module to binaries that reference them
 	binRefs := make(map[model.ModuleReference][]string, len(modules))
 	for _, bin := range binaries {
 		for _, ref := range bin.ModuleRefs {
@@ -89,11 +99,13 @@ func evaluate(conf Config, binaries []model.Binary, modules []model.Module) []Re
 		}
 	}
 
+	// build a map of permitted licenses
 	permitted := make(map[string]bool, len(conf.Allow))
 	for _, lic := range conf.Allow {
 		permitted[lic] = true
 	}
 
+	// build a map of exceptions, based on path and license
 	type pathLicense struct {
 		path    string
 		license string
@@ -109,6 +121,7 @@ func evaluate(conf Config, binaries []model.Binary, modules []model.Module) []Re
 		}
 	}
 
+	// check each module
 	results := make([]Result, 0, len(modules))
 	for _, mod := range modules {
 		res := Result{
