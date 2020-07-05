@@ -10,6 +10,8 @@ import (
 	"github.com/uw-labs/lichen/internal/model"
 )
 
+// Resolve inspects each module and determines what it is licensed under. The returned slice contains each
+// module enriched with license information.
 func Resolve(modules []model.Module, threshold float64) ([]model.Module, error) {
 	lc, err := licenseclassifier.New(threshold)
 	if err != nil {
@@ -34,6 +36,7 @@ func Resolve(modules []model.Module, threshold float64) ([]model.Module, error) 
 
 var fileRgx = regexp.MustCompile(`(?i)^li[cs]en[cs]e`)
 
+// locateLicenses searches for license files
 func locateLicenses(path string) (lp []string, err error) {
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
@@ -47,6 +50,7 @@ func locateLicenses(path string) (lp []string, err error) {
 	return lp, nil
 }
 
+// classify inspects each license file and classifies it
 func classify(lc *licenseclassifier.License, paths []string) ([]model.License, error) {
 	hits := make(map[string]float64)
 	for _, p := range paths {
