@@ -7,10 +7,12 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/hashicorp/go-multierror"
 	"github.com/uw-labs/lichen/internal/model"
 	"github.com/uw-labs/lichen/internal/module/buildinfo"
 )
 
+// Extract extracts build information from the supplied binaries
 func Extract(ctx context.Context, paths ...string) ([]model.BuildInfo, error) {
 	output, err := goVersion(ctx, paths)
 	if err != nil {
@@ -21,12 +23,27 @@ func Extract(ctx context.Context, paths ...string) ([]model.BuildInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	if len(parsed) == 0 {
+	if err := verifyExtracted(parsed, paths); err != nil {
 		return nil, fmt.Errorf("could not extract module information from binaries: %v", paths)
 	}
 	return parsed, nil
 }
 
+// verifyExtracted ensures all paths requests are covered by the parsed output
+func verifyExtracted(extracted []model.BuildInfo, requested []string) (err error) {
+	buildInfos := make(map[string]struct{}, len(extracted))
+	for _, binary := range extracted {
+		buildInfos[binary.Path] = struct{}{}
+	}
+	for _, path := range requested {
+		if _, found := buildInfos[path]; !found {
+			err = multierror.Append(err, fmt.Errorf("modules could not be obtained from %s", path))
+		}
+	}
+	return
+}
+
+// goVersion runs `go version -m [paths ...]` and returns the output
 func goVersion(ctx context.Context, paths []string) (string, error) {
 	goBin, err := exec.LookPath("go")
 	if err != nil {
