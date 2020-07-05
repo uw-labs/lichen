@@ -71,6 +71,17 @@ golang.org/x/sys@v0.0.0-20200116001909-b77594299b42: BSD-3-Clause (allowed)
 gopkg.in/yaml.v2@v2.3.0: Apache-2.0, MIT (allowed)
 ```
 
+...and using a custom template:
+
+```
+$ lichen --template="{{range .Modules}}{{range .Module.Licenses}}{{.Name | printf \"%s\n\"}}{{end}}{{end}}" $GOPATH/bin/lichen | sort | uniq -c | sort -nr
+   8 MIT
+   2 MPL-2.0
+   2 BSD-3-Clause
+   2 Apache-2.0
+   1 BSD-2-Clause
+```
+
 ## Config
 
 Example:
