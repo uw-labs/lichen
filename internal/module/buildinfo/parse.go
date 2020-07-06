@@ -9,9 +9,10 @@ import (
 // Parse parses build info details as returned by `go version -m [bin ...]`
 func Parse(info string) ([]model.BuildInfo, error) {
 	var (
-		lines   = strings.Split(info, "\n")
-		results = make([]model.BuildInfo, 0)
-		current model.BuildInfo
+		lines       = strings.Split(info, "\n")
+		results     = make([]model.BuildInfo, 0)
+		current     model.BuildInfo
+		replacement bool
 	)
 	for _, l := range lines {
 		// ignore blank lines
@@ -50,6 +51,12 @@ func Parse(info string) ([]model.BuildInfo, error) {
 		if len(parts) < 2 {
 			return nil, fmt.Errorf("invalid build info line: %s", l)
 		}
+		if replacement {
+			if parts[1] != "=>" {
+				return nil, fmt.Errorf("expected path replacement, received: %s", l)
+			}
+			replacement = false
+		}
 		switch parts[1] {
 		case "path":
 			if len(parts) != 3 {
@@ -61,14 +68,18 @@ func Parse(info string) ([]model.BuildInfo, error) {
 				return nil, fmt.Errorf("invalid mod line: %s", l)
 			}
 			current.ModulePath = parts[2]
-		case "dep":
-			if len(parts) != 5 {
+		case "dep", "=>":
+			switch len(parts) {
+			case 5:
+				current.ModuleRefs = append(current.ModuleRefs, model.ModuleReference{
+					Path:    parts[2],
+					Version: parts[3],
+				})
+			case 4:
+				replacement = true
+			default:
 				return nil, fmt.Errorf("invalid dep line: %s", l)
 			}
-			current.ModuleRefs = append(current.ModuleRefs, model.ModuleReference{
-				Path:    parts[2],
-				Version: parts[3],
-			})
 		default:
 			return nil, fmt.Errorf("unrecognised line: %s", l)
 		}

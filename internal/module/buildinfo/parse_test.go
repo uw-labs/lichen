@@ -38,7 +38,29 @@ func TestParse(t *testing.T) {
 			},
 		},
 		{
-			name: "basic mutli binary input",
+			name: "single binary input with dep replace",
+			input: `/tmp/lichen: go1.14
+	path	github.com/uw-labs/lichen
+	mod	github.com/uw-labs/lichen	(devel)	
+	dep	github.com/cpuguy83/go-md2man/v2	v2.0.0-20190314233015-f79a8a8ca69d
+	=>	github.com/uw-labs/go-md2man/v2	v0.4.16-0.20200608113539-44d3cd590db7	h1:7JSMFy7v19QNuP77yBMWawhzb9xD82oPmrlda5yrBkE=
+`,
+			expected: []model.BuildInfo{
+				{
+					Path:        "/tmp/lichen",
+					PackagePath: "github.com/uw-labs/lichen",
+					ModulePath:  "github.com/uw-labs/lichen",
+					ModuleRefs: []model.ModuleReference{
+						{
+							Path:    "github.com/uw-labs/go-md2man/v2",
+							Version: "v0.4.16-0.20200608113539-44d3cd590db7",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "basic multi binary input",
 			input: `/tmp/lichen: go1.14.4
 	path	github.com/uw-labs/lichen
 	mod	github.com/uw-labs/lichen	(devel)	
@@ -124,9 +146,9 @@ func TestParse(t *testing.T) {
 		{
 			name:        "partial dep line",
 			input:       `lichen: go1.14.4
-	dep	foo	v0
+	dep	foo
 `,
-			expectedErr: "invalid dep line: \tdep\tfoo\tv0",
+			expectedErr: "invalid dep line: \tdep\tfoo",
 		},
 		{
 			name:        "dep line unexpectedly long",
