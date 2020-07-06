@@ -52,25 +52,26 @@ func locateLicenses(path string) (lp []string, err error) {
 
 // classify inspects each license file and classifies it
 func classify(lc *licenseclassifier.License, paths []string) ([]model.License, error) {
-	hits := make(map[string]float64)
+	licenses := make([]model.License, 0)
 	for _, p := range paths {
 		content, err := ioutil.ReadFile(p)
 		if err != nil {
 			return nil, err
 		}
+		hits := make(map[string]float64)
 		matches := lc.MultipleMatch(string(content), true)
 		for _, match := range matches {
 			if conf, found := hits[match.Name]; !found || match.Confidence > conf {
 				hits[match.Name] = match.Confidence
 			}
 		}
-	}
-	licenses := make([]model.License, 0, len(hits))
-	for name, confidence := range hits {
-		licenses = append(licenses, model.License{
-			Name:       name,
-			Confidence: confidence,
-		})
+		for name, confidence := range hits {
+			licenses = append(licenses, model.License{
+				Name:       name,
+				Path:       p,
+				Confidence: confidence,
+			})
+		}
 	}
 	return licenses, nil
 }
