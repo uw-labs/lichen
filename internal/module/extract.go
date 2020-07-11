@@ -8,8 +8,8 @@ import (
 	"os/exec"
 
 	"github.com/hashicorp/go-multierror"
+	"github.com/uw-labs/lichen/internal/buildinfo"
 	"github.com/uw-labs/lichen/internal/model"
-	"github.com/uw-labs/lichen/internal/module/buildinfo"
 )
 
 // Extract extracts build information from the supplied binaries

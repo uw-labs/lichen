@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/uw-labs/lichen/internal/buildinfo"
 	"github.com/uw-labs/lichen/internal/model"
-	"github.com/uw-labs/lichen/internal/module/buildinfo"
 )
 
 func TestParse(t *testing.T) {
