@@ -1,19 +1,30 @@
 package license
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"regexp"
 	"strings"
 
 	"github.com/google/licenseclassifier"
+	"github.com/uw-labs/lichen/internal/license/db"
 	"github.com/uw-labs/lichen/internal/model"
 )
 
 // Resolve inspects each module and determines what it is licensed under. The returned slice contains each
 // module enriched with license information.
 func Resolve(modules []model.Module, threshold float64) ([]model.Module, error) {
-	lc, err := licenseclassifier.New(threshold)
+	archiveFn := licenseclassifier.ArchiveFunc(func() ([]byte, error) {
+		f, err := db.Open()
+		if err != nil {
+			return nil, fmt.Errorf("failed to open license databse: %w", err)
+		}
+		defer f.Close()
+		return ioutil.ReadAll(f)
+	})
+
+	lc, err := licenseclassifier.New(threshold, archiveFn)
 	if err != nil {
 		return nil, err
 	}
