@@ -7,7 +7,6 @@ linters:
     - dogsled
     - dupl
     - errcheck
-    - funlen
     - gochecknoinits
     - goconst
     - gocritic
@@ -40,5 +39,3 @@ linters:
 linters-settings:
   lll:
     line-length: 180
-  funlen:
-    lines: 75

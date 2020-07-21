@@ -2,8 +2,9 @@ package buildinfo
 
 import (
 	"fmt"
-	"github.com/uw-labs/lichen/internal/model"
 	"strings"
+
+	"github.com/uw-labs/lichen/internal/model"
 )
 
 // Parse parses build info details as returned by `go version -m [bin ...]`

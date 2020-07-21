@@ -116,49 +116,50 @@ func TestParse(t *testing.T) {
 			expectedErr: "unrecognised version line: /tmp/lichen: invalid",
 		},
 		{
-			name:        "partial path line",
-			input:       `lichen: go1.14.4
+			name: "partial path line",
+			input: `lichen: go1.14.4
 	path
 `,
 			expectedErr: "invalid path line: \tpath",
 		},
 		{
-			name:        "path line unexpectedly long",
-			input:       `lichen: go1.14.4
+			name: "path line unexpectedly long",
+			input: `lichen: go1.14.4
 	path	foo	bar
 `,
 			expectedErr: "invalid path line: \tpath\tfoo\tbar",
 		},
 		{
-			name:        "partial mod line",
-			input:       `lichen: go1.14.4
+			name: "partial mod line",
+			input: `lichen: go1.14.4
 	mod	foo	(devel)
 `,
 			expectedErr: "invalid mod line: \tmod\tfoo\t(devel)",
 		},
 		{
-			name:        "mod line unexpectedly long",
-			input:       `lichen: go1.14.4
+			name: "mod line unexpectedly long",
+			input: `lichen: go1.14.4
 	mod	foo	(devel)	x	
 `,
 			expectedErr: "invalid mod line: \tmod\tfoo\t(devel)\tx\t",
 		},
 		{
-			name:        "partial dep line",
-			input:       `lichen: go1.14.4
+			name: "partial dep line",
+			input: `lichen: go1.14.4
 	dep	foo
 `,
 			expectedErr: "invalid dep line: \tdep\tfoo",
 		},
 		{
-			name:        "dep line unexpectedly long",
-			input:       `lichen: go1.14.4
+			name: "dep line unexpectedly long",
+			input: `lichen: go1.14.4
 	dep	foo	v0	h1:x	x
 `,
 			expectedErr: "invalid dep line: \tdep\tfoo\tv0\th1:x\tx",
 		},
 	}
 	for _, tc := range testCases {
+		tc := tc
 		t.Run(tc.name, func(tt *testing.T) {
 			actual, err := buildinfo.Parse(tc.input)
 			if tc.expectedErr == "" {
