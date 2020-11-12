@@ -80,6 +80,7 @@ func classify(lc *licenseclassifier.License, paths []string) ([]model.License, e
 			licenses = append(licenses, model.License{
 				Name:       name,
 				Path:       p,
+				Content:    string(content),
 				Confidence: confidence,
 			})
 		}

@@ -31,6 +31,7 @@ func (r ModuleReference) String() string {
 // License carries license classification details
 type License struct {
 	Path       string  // OS level absolute path to the license file
+	Content    string  // the exact contents of the license file
 	Name       string  // SPDX name of the license
 	Confidence float64 // confidence from license classification
 }
