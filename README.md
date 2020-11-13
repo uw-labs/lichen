@@ -93,7 +93,7 @@ Example:
 # minimum confidence percentage used during license classification
 threshold: .80
 
-# all permitted licenses
+# all permitted licenses - if no list is specified, all licenses are assumed to be allowed
 allow:
   - "MIT"
   - "Apache-2.0"
