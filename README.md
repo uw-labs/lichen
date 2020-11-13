@@ -87,6 +87,10 @@ $ lichen --template="{{range .Modules}}{{range .Module.Licenses}}{{.Name | print
 
 ## Config
 
+Configuration is entirely optional. If you wish to use lichen to ensure only permitted licenses are in use, you can
+use the configuration to specify these. You can also override certain defaults or force a license if lichen cannot 
+detect one.
+
 Example:
 
 ```yaml
