@@ -38,6 +38,9 @@ information.
 go install github.com/uw-labs/lichen
 ```
 
+Note that Go must be installed wherever `lichen` is intended to be run, as `lichen` executes various Go commands (as
+discussed in the previous section).
+
 ## Usage
 
 By default `lichen` simply prints each module with its respective license. A path to at least one Go compiled binary
