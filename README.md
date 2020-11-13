@@ -109,10 +109,15 @@ override:
 
 # exceptions for violations
 exceptions:
-  - path: "github.com/foo/bar"
-    licenses: ["LGPL-3.0"] # this is our own software
-  - path: "github.com/baz/xyz"
-    licenses: ["CC-BY-SA-4.0"] # README.md + CONTRIBUTING.md are licensed under CC-BY-SA-4.0 (unused by us)
+  # exceptions for "license not permitted" type violations
+  licenseNotPermitted:
+    - path: "github.com/foo/bar"
+      licenses: ["LGPL-3.0"] # this is our own software
+    - path: "github.com/baz/xyz"
+      licenses: ["CC-BY-SA-4.0"] # README.md + CONTRIBUTING.md are licensed under CC-BY-SA-4.0 (unused by us)
+  # exceptions for "unresolvable license" type violations
+  unresolvableLicense:
+    - path: "github.com/test/foo"
 ```
 
 ## Caveat emptor

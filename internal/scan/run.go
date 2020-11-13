@@ -108,20 +108,26 @@ func evaluate(conf Config, binaries []model.BuildInfo, modules []model.Module) [
 		permitted[lic] = true
 	}
 
-	// build a map of exceptions, based on path and license
+	// build a map of not-permitted exceptions, based on path and license
 	type pathLicense struct {
 		path    string
 		license string
 	}
-	ignore := make(map[pathLicense]bool, len(conf.Exceptions))
-	for _, exception := range conf.Exceptions {
+	ignoreNotPermitted := make(map[pathLicense]bool, len(conf.Exceptions.LicenseNotPermitted))
+	for _, exception := range conf.Exceptions.LicenseNotPermitted {
 		for _, lic := range exception.Licenses {
 			pl := pathLicense{
 				path:    exception.Path,
 				license: lic,
 			}
-			ignore[pl] = true
+			ignoreNotPermitted[pl] = true
 		}
+	}
+
+	// build a map of unresolvable exceptions, based on path
+	ignoreUnresolvable := make(map[string]bool, len(conf.Exceptions.UnresolvableLicense))
+	for _, exception := range conf.Exceptions.UnresolvableLicense {
+		ignoreUnresolvable[exception.Path] = true
 	}
 
 	// check each module
@@ -132,7 +138,7 @@ func evaluate(conf Config, binaries []model.BuildInfo, modules []model.Module) [
 			UsedBy:   binRefs[mod.ModuleReference],
 			Decision: DecisionAllowed,
 		}
-		if len(mod.Licenses) == 0 {
+		if len(mod.Licenses) == 0 && !ignoreUnresolvable[mod.Path] {
 			res.Decision = DecisionNotAllowedUnresolvableLicense
 		}
 		for _, lic := range mod.Licenses {
@@ -140,7 +146,7 @@ func evaluate(conf Config, binaries []model.BuildInfo, modules []model.Module) [
 				path:    mod.Path,
 				license: lic.Name,
 			}
-			if len(permitted) > 0 && !permitted[lic.Name] && !ignore[pl] {
+			if len(permitted) > 0 && !permitted[lic.Name] && !ignoreNotPermitted[pl] {
 				res.Decision = DecisionNotAllowedLicenseNotPermitted
 				res.NotPermitted = append(res.NotPermitted, lic.Name)
 			}

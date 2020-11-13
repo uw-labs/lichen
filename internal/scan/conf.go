@@ -1,18 +1,27 @@
 package scan
 
 type Config struct {
-	Threshold  *float64    `yaml:"threshold"`
-	Allow      []string    `yaml:"allow"`
-	Exceptions []Exception `yaml:"exceptions"`
-	Overrides  []Override  `yaml:"override"`
+	Threshold  *float64   `yaml:"threshold"`
+	Allow      []string   `yaml:"allow"`
+	Exceptions Exceptions `yaml:"exceptions"`
+	Overrides  []Override `yaml:"override"`
 }
 
-type Exception struct {
-	Path     string
-	Licenses []string
+type Exceptions struct {
+	LicenseNotPermitted []LicenseNotPermitted `yaml:"licenseNotPermitted"`
+	UnresolvableLicense []UnresolvableLicense `yaml:"unresolvableLicense"`
+}
+
+type LicenseNotPermitted struct {
+	Path     string   `yaml:"path"`
+	Licenses []string `yaml:"licenses"`
+}
+
+type UnresolvableLicense struct {
+	Path string `yaml:"path"`
 }
 
 type Override struct {
-	Path     string
-	Licenses []string
+	Path     string   `yaml:"path"`
+	Licenses []string `yaml:"licenses"`
 }
