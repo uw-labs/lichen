@@ -112,12 +112,13 @@ exceptions:
   # exceptions for "license not permitted" type violations
   licenseNotPermitted:
     - path: "github.com/foo/bar"
-      licenses: ["LGPL-3.0"] # this is our own software
+      version: "v0.1.0" # version is optional - if specified, the exception will only apply to the configured version
+      licenses: ["LGPL-3.0"] # licenses is optional - if specified only violations in relation to the listed licenses will be ignored
     - path: "github.com/baz/xyz"
-      licenses: ["CC-BY-SA-4.0"] # README.md + CONTRIBUTING.md are licensed under CC-BY-SA-4.0 (unused by us)
   # exceptions for "unresolvable license" type violations
   unresolvableLicense:
     - path: "github.com/test/foo"
+      version: "v1.0.1" # version is optional - if unspecified, the exception will apply to all versions
 ```
 
 ## Caveat emptor

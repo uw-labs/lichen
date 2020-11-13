@@ -14,11 +14,13 @@ type Exceptions struct {
 
 type LicenseNotPermitted struct {
 	Path     string   `yaml:"path"`
+	Version  string   `yaml:"version"`
 	Licenses []string `yaml:"licenses"`
 }
 
 type UnresolvableLicense struct {
-	Path string `yaml:"path"`
+	Path    string `yaml:"path"`
+	Version string `yaml:"version"`
 }
 
 type Override struct {

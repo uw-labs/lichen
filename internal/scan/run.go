@@ -108,28 +108,6 @@ func evaluate(conf Config, binaries []model.BuildInfo, modules []model.Module) [
 		permitted[lic] = true
 	}
 
-	// build a map of not-permitted exceptions, based on path and license
-	type pathLicense struct {
-		path    string
-		license string
-	}
-	ignoreNotPermitted := make(map[pathLicense]bool, len(conf.Exceptions.LicenseNotPermitted))
-	for _, exception := range conf.Exceptions.LicenseNotPermitted {
-		for _, lic := range exception.Licenses {
-			pl := pathLicense{
-				path:    exception.Path,
-				license: lic,
-			}
-			ignoreNotPermitted[pl] = true
-		}
-	}
-
-	// build a map of unresolvable exceptions, based on path
-	ignoreUnresolvable := make(map[string]bool, len(conf.Exceptions.UnresolvableLicense))
-	for _, exception := range conf.Exceptions.UnresolvableLicense {
-		ignoreUnresolvable[exception.Path] = true
-	}
-
 	// check each module
 	results := make([]EvaluatedModule, 0, len(modules))
 	for _, mod := range modules {
@@ -138,15 +116,11 @@ func evaluate(conf Config, binaries []model.BuildInfo, modules []model.Module) [
 			UsedBy:   binRefs[mod.ModuleReference],
 			Decision: DecisionAllowed,
 		}
-		if len(mod.Licenses) == 0 && !ignoreUnresolvable[mod.Path] {
+		if len(mod.Licenses) == 0 && !ignoreUnresolvable(conf, mod) {
 			res.Decision = DecisionNotAllowedUnresolvableLicense
 		}
 		for _, lic := range mod.Licenses {
-			pl := pathLicense{
-				path:    mod.Path,
-				license: lic.Name,
-			}
-			if len(permitted) > 0 && !permitted[lic.Name] && !ignoreNotPermitted[pl] {
+			if len(permitted) > 0 && !permitted[lic.Name] && !ignoreNotPermitted(conf, mod, lic) {
 				res.Decision = DecisionNotAllowedLicenseNotPermitted
 				res.NotPermitted = append(res.NotPermitted, lic.Name)
 			}
@@ -154,4 +128,29 @@ func evaluate(conf Config, binaries []model.BuildInfo, modules []model.Module) [
 		results = append(results, res)
 	}
 	return results
+}
+
+func ignoreUnresolvable(conf Config, mod model.Module) bool {
+	for _, exception := range conf.Exceptions.UnresolvableLicense {
+		if exception.Path == mod.Path && (exception.Version == "" || exception.Version == mod.Version) {
+			return true
+		}
+	}
+	return false
+}
+
+func ignoreNotPermitted(conf Config, mod model.Module, lic model.License) bool {
+	for _, exception := range conf.Exceptions.LicenseNotPermitted {
+		if exception.Path == mod.Path && (exception.Version == "" || exception.Version == mod.Version) {
+			if len(exception.Licenses) == 0 {
+				return true
+			}
+			for _, exceptionLicense := range exception.Licenses {
+				if exceptionLicense == lic.Name {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
