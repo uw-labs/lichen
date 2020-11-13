@@ -70,15 +70,26 @@ func uniqueModuleRefs(infos []model.BuildInfo) []model.ModuleReference {
 
 // applyOverrides replaces license information
 func applyOverrides(modules []model.Module, overrides []Override) []model.Module {
-	replacements := make(map[string][]string, len(overrides))
+	type replacement struct {
+		version  string
+		licenses []string
+	}
+	replacements := make(map[string]replacement, len(overrides))
 	for _, o := range overrides {
-		replacements[o.Path] = o.Licenses
+		replacements[o.Path] = replacement{
+			version:  o.Version,
+			licenses: o.Licenses,
+		}
 	}
 
 	for i, mod := range modules {
 		if repl, found := replacements[mod.ModuleReference.Path]; found {
-			mod.Licenses = make([]model.License, 0, len(repl))
-			for _, lic := range repl {
+			// if an explicit version is configured, only apply the override if the module version matches
+			if repl.version != "" && repl.version != mod.Version {
+				continue
+			}
+			mod.Licenses = make([]model.License, 0, len(repl.licenses))
+			for _, lic := range repl.licenses {
 				mod.Licenses = append(mod.Licenses, model.License{
 					Name:       lic,
 					Confidence: 1,

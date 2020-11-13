@@ -102,10 +102,11 @@ allow:
   - "ISC"
   - "PostgreSQL"
 
-# overrides for cases where a license cannot be detected
+# overrides for cases where a license cannot be detected, but the software is licensed
 override:
   - path: "github.com/abc/xyz"
-    licenses: ["MIT"] # doesn't have a LICENSE file but it's in the README
+    version: "v0.1.0" # version is optional - if specified, the override will only apply for the configured version
+    licenses: ["MIT"] # specify licenses
 
 # exceptions for violations
 exceptions:
