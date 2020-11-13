@@ -92,7 +92,7 @@ func run(c *cli.Context) error {
 	var rErr error
 	for _, m := range summary.Modules {
 		if !m.Allowed() {
-			rErr = multierror.Append(rErr, fmt.Errorf("%s: %s", m.Module.Path, m.ExplainDecision()))
+			rErr = multierror.Append(rErr, fmt.Errorf("%s: %s", m.Module.ModuleReference, m.ExplainDecision()))
 		}
 	}
 	return rErr
