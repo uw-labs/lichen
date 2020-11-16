@@ -129,6 +129,10 @@ exceptions:
       version: "v1.0.1" # version is optional - if unspecified, the exception will apply to all versions
 ```
 
+## Credit
+
+This project was very much inspired by [mitchellh/golicense](https://github.com/mitchellh/golicense)
+
 ## Caveat emptor
 
 Just as a linter cannot _guarantee_ working and correct code, this tool cannot guarantee dependencies and their licenses
