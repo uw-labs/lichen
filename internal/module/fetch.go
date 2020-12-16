@@ -16,6 +16,10 @@ import (
 )
 
 func Fetch(ctx context.Context, refs []model.ModuleReference) ([]model.Module, error) {
+	if len(refs) == 0 {
+		return []model.Module{}, nil
+	}
+
 	goBin, err := exec.LookPath("go")
 	if err != nil {
 		return nil, err
