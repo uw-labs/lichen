@@ -23,11 +23,12 @@ func Parse(info string) ([]model.BuildInfo, error) {
 
 		// start of new build info output
 		if !strings.HasPrefix(l, "\t") {
-			parts := strings.SplitN(l, ":", 2)
-			if len(parts) != 2 {
+			parts := strings.Split(l, ":")
+			if len(parts) < 2 {
 				return nil, fmt.Errorf("invalid version line: %s", l)
 			}
-			version := strings.TrimSpace(parts[1])
+			version := strings.TrimSpace(parts[len(parts)-1])
+			path := strings.Join(parts[:len(parts)-1], ":")
 			switch {
 			case version == "not executable file":
 				return nil, fmt.Errorf("%s is not an executable", parts[0])
@@ -43,7 +44,7 @@ func Parse(info string) ([]model.BuildInfo, error) {
 			if current.Path != "" {
 				results = append(results, current)
 			}
-			current = model.BuildInfo{Path: parts[0]}
+			current = model.BuildInfo{Path: path}
 			continue
 		}
 

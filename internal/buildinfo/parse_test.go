@@ -96,6 +96,27 @@ func TestParse(t *testing.T) {
 			},
 		},
 		{
+			name: "windows basic single binary input",
+			input: `C:\lichen.exe: go1.14.4
+	path	github.com/uw-labs/lichen
+	mod	github.com/uw-labs/lichen	(devel)	
+	dep	github.com/cpuguy83/go-md2man/v2	v2.0.0-20190314233015-f79a8a8ca69d	h1:U+s90UTSYgptZMwQh2aRr3LuazLJIa+Pg3Kc1ylSYVY=
+`,
+			expected: []model.BuildInfo{
+				{
+					Path:        `C:\lichen.exe`,
+					PackagePath: "github.com/uw-labs/lichen",
+					ModulePath:  "github.com/uw-labs/lichen",
+					ModuleRefs: []model.ModuleReference{
+						{
+							Path:    "github.com/cpuguy83/go-md2man/v2",
+							Version: "v2.0.0-20190314233015-f79a8a8ca69d",
+						},
+					},
+				},
+			},
+		},
+		{
 			name:        "not executable file",
 			input:       `/tmp/lichen: not executable file`,
 			expectedErr: "/tmp/lichen is not an executable",
