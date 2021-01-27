@@ -63,7 +63,10 @@ func goVersion(ctx context.Context, paths []string) (string, error) {
 	cmd.Dir = tempDir
 	out, err := cmd.Output()
 	if err != nil {
-		return "", err
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			return "", fmt.Errorf("error when running 'go version': %w - stderr: %s", err, exitErr.Stderr)
+		}
+		return "", fmt.Errorf("error when running 'go version': %w", err)
 	}
 
 	return string(out), err
