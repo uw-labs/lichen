@@ -1,6 +1,9 @@
 package model
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+)
 
 // BuildInfo encapsulates build info embedded into a Go compile binary
 type BuildInfo struct {
@@ -23,8 +26,21 @@ type ModuleReference struct {
 	Version string // module version (can take a variety of forms)
 }
 
+// pathRgx covers
+//  - unix paths: ".", "..", prefixed "./", prefixed "../", prefixed "/"
+//  - windows paths: ".", "..", prefixed ".\", prefixed "..\", prefixed "<drive>:\"
+var pathRgx = regexp.MustCompile(`^(\.\.?($|/|\\)|/|[A-Za-z]:\\)`)
+
+// IsLocal returns true if the module reference points to a local path
+func (r ModuleReference) IsLocal() bool {
+	return r.Version == "" && pathRgx.MatchString(r.Path)
+}
+
 // String returns a typical string representation of a module reference (path@version)
 func (r ModuleReference) String() string {
+	if r.Version == "" {
+		return r.Path
+	}
 	return fmt.Sprintf("%s@%s", r.Path, r.Version)
 }
 

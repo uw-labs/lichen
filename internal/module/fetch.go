@@ -32,8 +32,10 @@ func Fetch(ctx context.Context, refs []model.ModuleReference) ([]model.Module, e
 	defer os.Remove(tempDir)
 
 	args := []string{"mod", "download", "-json"}
-	for _, mod := range refs {
-		args = append(args, mod.String())
+	for _, ref := range refs {
+		if !ref.IsLocal() {
+			args = append(args, ref.String())
+		}
 	}
 
 	cmd := exec.CommandContext(ctx, goBin, args...)
@@ -55,6 +57,15 @@ func Fetch(ctx context.Context, refs []model.ModuleReference) ([]model.Module, e
 			return nil, err
 		}
 		modules = append(modules, m)
+	}
+
+	// add local modules, as these won't be included in the set returned by `go mod download`
+	for _, ref := range refs {
+		if ref.IsLocal() {
+			modules = append(modules, model.Module{
+				ModuleReference: ref,
+			})
+		}
 	}
 
 	// sanity check: all modules should have been covered in the output from `go mod download`

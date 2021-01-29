@@ -30,6 +30,12 @@ func Resolve(modules []model.Module, threshold float64) ([]model.Module, error) 
 	}
 
 	for i, m := range modules {
+		if m.IsLocal() {
+			// there is no guarantee we are being run in a location that makes local module references resolvable.. to
+			// avoid incidental and non-obvious behaviour here, we simply don't touch such references - overrides must
+			// be provided instead.
+			continue
+		}
 		paths, err := locateLicenses(m.Dir)
 		if err != nil {
 			return nil, err
