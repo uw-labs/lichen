@@ -51,7 +51,7 @@ func Resolve(modules []model.Module, threshold float64) ([]model.Module, error) 
 	return modules, nil
 }
 
-var fileRgx = regexp.MustCompile(`(?i)^li[cs]en[cs]e`)
+var fileRgx = regexp.MustCompile(`(?i)^(li[cs]en[cs]e|copying)`)
 
 // locateLicenses searches for license files
 func locateLicenses(path string) (lp []string, err error) {
