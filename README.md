@@ -35,7 +35,7 @@ information.
 ## Install
 
 ```
-go get github.com/uw-labs/lichen
+go install github.com/uw-labs/lichen@latest
 ```
 
 Note that Go must be installed wherever `lichen` is intended to be run, as `lichen` executes various Go commands (as
