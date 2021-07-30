@@ -52,6 +52,10 @@ lichen --config=path/to/lichen.yaml [binary ...]
 
 Run ```lichen --help``` for further information on flags.
 
+Note that the where `lichen` runs the Go executable, the process is created with the same environment as `lichen`
+itself - therefore you can set [Go related environment variables](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
+(e.g. `GOPRIVATE`) and these will be respected.
+
 ## Example
 
 We can run lichen on itself:
