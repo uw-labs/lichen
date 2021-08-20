@@ -24,7 +24,7 @@ func Extract(ctx context.Context, paths ...string) ([]model.BuildInfo, error) {
 		return nil, err
 	}
 	if err := verifyExtracted(parsed, paths); err != nil {
-		return nil, fmt.Errorf("could not extract module information from binaries: %v", paths)
+		return nil, fmt.Errorf("could not extract module information: %w", err)
 	}
 	return parsed, nil
 }
@@ -37,7 +37,7 @@ func verifyExtracted(extracted []model.BuildInfo, requested []string) (err error
 	}
 	for _, path := range requested {
 		if _, found := buildInfos[path]; !found {
-			err = multierror.Append(err, fmt.Errorf("modules could not be obtained from %s", path))
+			err = multierror.Append(err, fmt.Errorf("modules could not be obtained from %[1]s (hint: run `go version -m %[1]q`)", path))
 		}
 	}
 	return

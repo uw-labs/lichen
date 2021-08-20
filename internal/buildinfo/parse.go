@@ -2,10 +2,13 @@ package buildinfo
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/uw-labs/lichen/internal/model"
 )
+
+var goVersionRgx = regexp.MustCompile(`^(.*?): (?:(?:devel )?go[0-9]+|devel \+[0-9a-f]+)`)
 
 // Parse parses build info details as returned by `go version -m [bin ...]`
 func Parse(info string) ([]model.BuildInfo, error) {
@@ -23,28 +26,14 @@ func Parse(info string) ([]model.BuildInfo, error) {
 
 		// start of new build info output
 		if !strings.HasPrefix(l, "\t") {
-			parts := strings.Split(l, ":")
-			if len(parts) < 2 {
-				return nil, fmt.Errorf("invalid version line: %s", l)
-			}
-			version := strings.TrimSpace(parts[len(parts)-1])
-			path := strings.Join(parts[:len(parts)-1], ":")
-			switch {
-			case version == "not executable file":
-				return nil, fmt.Errorf("%s is not an executable", parts[0])
-			case version == "unrecognized executable format":
-				return nil, fmt.Errorf("%s has an unrecognized executable format", parts[0])
-			case version == "go version not found":
-				return nil, fmt.Errorf("%s does not appear to be a Go compiled binary", parts[0])
-			case strings.HasPrefix(version, "go"):
-				// sensible looking
-			default:
+			matches := goVersionRgx.FindStringSubmatch(l)
+			if len(matches) != 2 {
 				return nil, fmt.Errorf("unrecognised version line: %s", l)
 			}
 			if current.Path != "" {
 				results = append(results, current)
 			}
-			current = model.BuildInfo{Path: path}
+			current = model.BuildInfo{Path: matches[1]}
 			continue
 		}
 
