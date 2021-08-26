@@ -117,22 +117,43 @@ func TestParse(t *testing.T) {
 			},
 		},
 		{
-			name:        "not executable file",
-			input:       `/tmp/lichen: not executable file`,
-			expectedErr: "/tmp/lichen is not an executable",
+			name:  "development version (pre-go1.17)",
+			input: `/tmp/lichen: devel +01821137c2 Sat Apr 3 01:45:17 2021 +0000`,
+			expected: []model.BuildInfo{
+				{
+					Path: "/tmp/lichen",
+				},
+			},
 		},
 		{
-			name:        "unrecognised exe file",
-			input:       `/tmp/lichen: unrecognized executable format`,
-			expectedErr: "/tmp/lichen has an unrecognized executable format",
+			name:  "development version (current)",
+			input: `/tmp/lichen: devel go1.18-0c83e01e0c Wed Aug 18 15:11:52 2021 +0000`,
+			expected: []model.BuildInfo{
+				{
+					Path: "/tmp/lichen",
+				},
+			},
 		},
 		{
-			name:        "go version not found",
-			input:       `/tmp/lichen: go version not found`,
-			expectedErr: "/tmp/lichen does not appear to be a Go compiled binary",
+			name:  "development version (old)",
+			input: `/tmp/lichen: devel +b7a85e0003 linux/amd64`,
+			expected: []model.BuildInfo{
+				{
+					Path: "/tmp/lichen",
+				},
+			},
 		},
 		{
-			name:        "invalid",
+			name:  "windows development version",
+			input: `C:\lichen.exe: devel go1.18-0c83e01e0c Wed Aug 18 15:11:52 2021 +0000`,
+			expected: []model.BuildInfo{
+				{
+					Path: `C:\lichen.exe`,
+				},
+			},
+		},
+		{
+			name:        "unrecognised line",
 			input:       `/tmp/lichen: invalid`,
 			expectedErr: "unrecognised version line: /tmp/lichen: invalid",
 		},
