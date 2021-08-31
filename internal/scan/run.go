@@ -2,6 +2,7 @@ package scan
 
 import (
 	"context"
+	"io/ioutil"
 	"sort"
 
 	"github.com/uw-labs/lichen/internal/license"
@@ -71,14 +72,16 @@ func uniqueModuleRefs(infos []model.BuildInfo) []model.ModuleReference {
 // applyOverrides replaces license information
 func applyOverrides(modules []model.Module, overrides []Override) []model.Module {
 	type replacement struct {
-		version  string
-		licenses []string
+		version   string
+		licenses  []string
+		documents []string
 	}
 	replacements := make(map[string]replacement, len(overrides))
 	for _, o := range overrides {
 		replacements[o.Path] = replacement{
-			version:  o.Version,
-			licenses: o.Licenses,
+			version:   o.Version,
+			licenses:  o.Licenses,
+			documents: o.Documents,
 		}
 	}
 
@@ -89,12 +92,24 @@ func applyOverrides(modules []model.Module, overrides []Override) []model.Module
 				continue
 			}
 			mod.Licenses = make([]model.License, 0, len(repl.licenses))
-			for _, lic := range repl.licenses {
+			for i, lic := range repl.licenses {
+				if i >= len(repl.documents) {
+					panic("no license document defined for: " + lic)
+				}
+
+				content, err := ioutil.ReadFile(mod.Dir + "/" + repl.documents[i])
+				if err != nil {
+					panic(err)
+				}
+
 				mod.Licenses = append(mod.Licenses, model.License{
+					Path:       mod.Dir + "/" + repl.documents[i],
+					Content:    string(content),
 					Name:       lic,
 					Confidence: 1,
 				})
 			}
+
 			modules[i] = mod
 		}
 	}

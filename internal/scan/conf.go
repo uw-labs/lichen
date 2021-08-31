@@ -24,7 +24,8 @@ type UnresolvableLicense struct {
 }
 
 type Override struct {
-	Path     string   `yaml:"path"`
-	Version  string   `yaml:"version"`
-	Licenses []string `yaml:"licenses"`
+	Path      string   `yaml:"path"`
+	Version   string   `yaml:"version"`
+	Licenses  []string `yaml:"licenses"`
+	Documents []string `yaml:"documents"`
 }
