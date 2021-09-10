@@ -31,7 +31,12 @@ func Fetch(ctx context.Context, refs []model.ModuleReference) ([]model.Module, e
 	}
 	defer os.Remove(tempDir)
 
-	args := []string{"mod", "download", "-json"}
+	hasVendor := false
+	if _, err := os.Stat("./vendor"); err == nil {
+		hasVendor = true
+	}
+
+	args := []string{"list", "-m", "-mod=readonly", "-json"}
 	for _, ref := range refs {
 		if !ref.IsLocal() {
 			args = append(args, ref.String())
@@ -56,6 +61,13 @@ func Fetch(ctx context.Context, refs []model.ModuleReference) ([]model.Module, e
 			}
 			return nil, err
 		}
+
+		if hasVendor {
+			if _, err := os.Stat("./vendor/" + m.Path); err == nil {
+				m.Dir = "./vendor/" + m.Path
+			}
+		}
+
 		modules = append(modules, m)
 	}
 
