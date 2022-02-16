@@ -153,6 +153,30 @@ func TestParse(t *testing.T) {
 			},
 		},
 		{
+			name:  "1.18 compiled binary with `build` lines",
+			input: `/tmp/lichen: go1.18beta2
+	path	github.com/uw-labs/lichen
+	mod	github.com/uw-labs/lichen	(devel)	
+	dep	github.com/cpuguy83/go-md2man/v2	v2.0.0-20190314233015-f79a8a8ca69d	h1:U+s90UTSYgptZMwQh2aRr3LuazLJIa+Pg3Kc1ylSYVY=
+	build	-compiler=gc
+	build	CGO_ENABLED=1
+	build	vcs=git
+`,
+			expected: []model.BuildInfo{
+				{
+					Path:        `/tmp/lichen`,
+					PackagePath: "github.com/uw-labs/lichen",
+					ModulePath:  "github.com/uw-labs/lichen",
+					ModuleRefs: []model.ModuleReference{
+						{
+							Path:    "github.com/cpuguy83/go-md2man/v2",
+							Version: "v2.0.0-20190314233015-f79a8a8ca69d",
+						},
+					},
+				},
+			},
+		},
+		{
 			name:        "unrecognised line",
 			input:       `/tmp/lichen: invalid`,
 			expectedErr: "unrecognised version line: /tmp/lichen: invalid",

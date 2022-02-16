@@ -71,6 +71,8 @@ func Parse(info string) ([]model.BuildInfo, error) {
 			default:
 				return nil, fmt.Errorf("invalid dep line: %s", l)
 			}
+		case "build":
+			// introduced in Go 1.18 - not captured as we aren't using it for anything
 		default:
 			return nil, fmt.Errorf("unrecognised line: %s", l)
 		}
