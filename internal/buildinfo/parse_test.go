@@ -153,7 +153,7 @@ func TestParse(t *testing.T) {
 			},
 		},
 		{
-			name:  "1.18 compiled binary with `build` lines",
+			name: "1.18 compiled binary with `build` lines",
 			input: `/tmp/lichen: go1.18beta2
 	path	github.com/uw-labs/lichen
 	mod	github.com/uw-labs/lichen	(devel)	
