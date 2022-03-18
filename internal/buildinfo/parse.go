@@ -73,6 +73,8 @@ func Parse(info string) ([]model.BuildInfo, error) {
 			}
 		case "build":
 			// introduced in Go 1.18 - not captured as we aren't using it for anything
+		case "":
+			// blank (tab prefixed) lines appear after lines relating to replace directives in Go 1.18 compiled binaries
 		default:
 			return nil, fmt.Errorf("unrecognised line: %s", l)
 		}

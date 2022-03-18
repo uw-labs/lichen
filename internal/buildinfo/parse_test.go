@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
 	"github.com/uw-labs/lichen/internal/buildinfo"
 	"github.com/uw-labs/lichen/internal/model"
 )
@@ -171,6 +172,34 @@ func TestParse(t *testing.T) {
 						{
 							Path:    "github.com/cpuguy83/go-md2man/v2",
 							Version: "v2.0.0-20190314233015-f79a8a8ca69d",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "superfluous blank line (observed Go 1.18+)",
+			input: `/tmp/lichen: go1.18
+	path	github.com/uw-labs/lichen
+	mod	github.com/uw-labs/lichen	(devel)	
+	dep	github.com/lyft/protoc-gen-star	v0.6.0
+	=>	github.com/johanbrandhorst/protoc-gen-star	v0.4.16-0.20200806111151-9a8e34bf9dea	
+	
+	dep	github.com/spf13/afero	v1.8.0	
+`,
+			expected: []model.BuildInfo{
+				{
+					Path:        `/tmp/lichen`,
+					PackagePath: "github.com/uw-labs/lichen",
+					ModulePath:  "github.com/uw-labs/lichen",
+					ModuleRefs: []model.ModuleReference{
+						{
+							Path:    "github.com/johanbrandhorst/protoc-gen-star",
+							Version: "v0.4.16-0.20200806111151-9a8e34bf9dea",
+						},
+						{
+							Path:    "github.com/spf13/afero",
+							Version: "v1.8.0",
 						},
 					},
 				},
