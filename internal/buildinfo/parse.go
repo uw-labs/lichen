@@ -62,10 +62,15 @@ func Parse(info string) ([]model.BuildInfo, error) {
 		case "dep", "=>":
 			switch len(parts) {
 			case 5:
-				current.ModuleRefs = append(current.ModuleRefs, model.ModuleReference{
-					Path:    parts[2],
-					Version: parts[3],
-				})
+				if parts[3] == "(devel)" {
+					// "mod" line in disguise (Go 1.18)
+					current.ModulePath = parts[2]
+				} else {
+					current.ModuleRefs = append(current.ModuleRefs, model.ModuleReference{
+						Path:    parts[2],
+						Version: parts[3],
+					})
+				}
 			case 4:
 				replacement = true
 			default:
