@@ -1,0 +1,40 @@
+builds:
+- id: lichen
+  env:
+    - CGO_ENABLED=0
+  mod_timestamp: '{{ .CommitTimestamp }}'
+  goos:
+    - windows
+    - linux
+    - darwin
+  goarch:
+    - amd64
+    - arm64
+  ldflags:
+    - -X github.com/uw-labs/lichen.version=v{{ .Version }}
+
+archives:
+- format: binary
+
+nfpms:
+- id: lichen
+  package_name: lichen
+  builds:
+    - lichen
+  description: Go binary license checker. Extracts module usage information from binaries and analyses their licenses.
+  maintainer: https://github.com/jsirianni/lichen
+  license: MIT License
+  formats:
+  - rpm
+  - deb
+  - apk
+  bindir: /usr/local/bin
+
+checksum:
+  algorithm: sha256
+
+release:
+
+changelog:
+  skip: false
+  use: github
