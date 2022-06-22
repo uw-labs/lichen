@@ -22,6 +22,9 @@ const tmpl = `{{range .Modules}}
 {{- if .Allowed}} ({{ Color "#00ff00" .ExplainDecision}}){{else}} ({{ Color "#ff0000" .ExplainDecision}}){{end}}
 {{end}}`
 
+// set at compile time
+var version string
+
 func main() {
 	a := &cli.App{
 		Name:  "lichen",
@@ -43,6 +46,11 @@ func main() {
 				Aliases: []string{"j"},
 				Usage:   "write JSON results to the supplied file",
 			},
+			&cli.BoolFlag{
+				Name:    "version",
+				Aliases: []string{"v"},
+				Usage:   "print build version",
+			},
 		},
 		Action: run,
 	}
@@ -53,6 +61,14 @@ func main() {
 }
 
 func run(c *cli.Context) error {
+	if c.Bool("version") {
+		if version == "" {
+			version = "dev"
+		}
+		fmt.Println(version)
+		return nil
+	}
+
 	if c.NArg() == 0 {
 		_ = cli.ShowAppHelp(c)
 		return errors.New("path to at least one binary must be supplied")
