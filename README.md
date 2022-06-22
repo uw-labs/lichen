@@ -133,6 +133,16 @@ exceptions:
       version: "v1.0.1" # version is optional - if unspecified, the exception will apply to all versions
 ```
 
+## Developing
+
+### Build
+
+While developing Lichen, you can build a development binary with [Goreleaser](https://goreleaser.com/).
+
+```bash
+goreleaser build --snapshot --skip-validate
+```
+
 ## Credit
 
 This project was very much inspired by [mitchellh/golicense](https://github.com/mitchellh/golicense)
