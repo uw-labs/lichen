@@ -148,3 +148,7 @@ jobs:
         with:
           version: latest
           args: release --rm-dist --skip-publish --skip-validate --snapshot
+      - name: Test Lichen Linux/AMD64
+        run: dist/lichen_linux_amd64_v1/lichen dist/lichen_linux_amd64_v1/lichen
+      - name: Test Lichen Linux/ARM64
+        run: dist/lichen_linux_amd64_v1/lichen dist/lichen_linux_arm64/lichen
