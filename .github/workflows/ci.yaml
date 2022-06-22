@@ -27,7 +27,7 @@ jobs:
         id: module-cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/go/pkg/mod
+          path: ${{ env.GOPATH }}/pkg/mod
           key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.mod', '**/go.sum') }}
       - name: Install dependencies
         if: steps.module-cache.outputs.cache-hit != 'true'
@@ -56,7 +56,7 @@ jobs:
         id: module-cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/go/pkg/mod
+          path: ${{ env.GOPATH }}/pkg/mod
           key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.mod', '**/go.sum') }}
       - name: Test
         run: go test -race ./...
@@ -80,7 +80,7 @@ jobs:
         id: module-cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/go/pkg/mod
+          path: ${{ env.GOPATH }}/pkg/mod
           key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.mod', '**/go.sum') }}
       - name: Lint
         uses: golangci/golangci-lint-action@v3
@@ -110,7 +110,7 @@ jobs:
         id: module-cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/go/pkg/mod
+          path: ${{ env.GOPATH }}/pkg/mod
           key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.mod', '**/go.sum') }}
       - name: Vet
         run: go vet ./...
@@ -140,7 +140,7 @@ jobs:
         id: module-cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/go/pkg/mod
+          path: ${{ env.GOPATH }}/pkg/mod
           key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.mod', '**/go.sum') }}
       - name: Test GoReleaser
         uses: goreleaser/goreleaser-action@v3
