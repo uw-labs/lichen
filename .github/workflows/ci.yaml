@@ -12,7 +12,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2.1.4
         with:
-          go-version: 1.18
+          go-version: ${{ matrix.go-version }}
       - name: Setup Go Environment
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
@@ -41,7 +41,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2.1.4
         with:
-          go-version: 1.18
+          go-version: ${{ matrix.go-version }}
       - name: Setup Go Environment
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
@@ -65,7 +65,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2.1.4
         with:
-          go-version: 1.18
+          go-version: ${{ matrix.go-version }}
       - name: Setup Go Environment
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
@@ -95,7 +95,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2.1.4
         with:
-          go-version: 1.18
+          go-version: ${{ matrix.go-version }}
       - name: Setup Go Environment
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
@@ -113,8 +113,7 @@ jobs:
     strategy:
       matrix:
         go-version: [1.17.x, 1.18.x]
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs:
       - setup-environment
       - test
@@ -126,7 +125,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2.1.4
         with:
-          go-version: 1.18
+          go-version: ${{ matrix.go-version }}
       - name: Setup Go Environment
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
