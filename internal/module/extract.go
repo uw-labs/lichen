@@ -3,7 +3,6 @@ package module
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 
@@ -50,7 +49,7 @@ func goVersion(ctx context.Context, paths []string) (string, error) {
 		return "", err
 	}
 
-	tempDir, err := ioutil.TempDir("", "lichen")
+	tempDir, err := os.MkdirTemp("", "lichen")
 	if err != nil {
 		return "", fmt.Errorf("failed to create temp directory: %w", err)
 	}

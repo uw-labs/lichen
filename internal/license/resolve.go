@@ -2,7 +2,8 @@ package license
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -21,7 +22,7 @@ func Resolve(modules []model.Module, threshold float64) ([]model.Module, error) 
 			return nil, fmt.Errorf("failed to open license databse: %w", err)
 		}
 		defer f.Close()
-		return ioutil.ReadAll(f)
+		return io.ReadAll(f)
 	})
 
 	lc, err := licenseclassifier.New(threshold, archiveFn)
@@ -55,7 +56,7 @@ var fileRgx = regexp.MustCompile(`(?i)^(li[cs]en[cs]e|copying)`)
 
 // locateLicenses searches for license files
 func locateLicenses(path string) (lp []string, err error) {
-	files, err := ioutil.ReadDir(path)
+	files, err := os.ReadDir(path)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +72,7 @@ func locateLicenses(path string) (lp []string, err error) {
 func classify(lc *licenseclassifier.License, paths []string) ([]model.License, error) {
 	licenses := make([]model.License, 0)
 	for _, p := range paths {
-		content, err := ioutil.ReadFile(p)
+		content, err := os.ReadFile(p)
 		if err != nil {
 			return nil, err
 		}

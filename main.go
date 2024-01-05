@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -101,7 +100,7 @@ func run(c *cli.Context) error {
 func parseConfig(path string) (scan.Config, error) {
 	var conf scan.Config
 	if path != "" {
-		b, err := ioutil.ReadFile(path)
+		b, err := os.ReadFile(path)
 		if err != nil {
 			return scan.Config{}, fmt.Errorf("failed to read file %q: %w", path, err)
 		}
