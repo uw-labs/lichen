@@ -4,13 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"text/template"
 
-	"github.com/hashicorp/go-multierror"
 	"github.com/muesli/termenv"
 	"github.com/urfave/cli/v2"
 	"github.com/uw-labs/lichen/internal/scan"
@@ -89,19 +87,19 @@ func run(c *cli.Context) error {
 		return fmt.Errorf("failed to write results: %w", err)
 	}
 
-	var rErr error
+	errs := []error{}
 	for _, m := range summary.Modules {
 		if !m.Allowed() {
-			rErr = multierror.Append(rErr, fmt.Errorf("%s: %s", m.Module.ModuleReference, m.ExplainDecision()))
+			errs = append(errs, fmt.Errorf("%s: %s", m.Module.ModuleReference, m.ExplainDecision()))
 		}
 	}
-	return rErr
+	return errors.Join(errs...)
 }
 
 func parseConfig(path string) (scan.Config, error) {
 	var conf scan.Config
 	if path != "" {
-		b, err := ioutil.ReadFile(path)
+		b, err := os.ReadFile(path)
 		if err != nil {
 			return scan.Config{}, fmt.Errorf("failed to read file %q: %w", path, err)
 		}

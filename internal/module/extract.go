@@ -2,12 +2,11 @@ package module
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 
-	"github.com/hashicorp/go-multierror"
 	"github.com/uw-labs/lichen/internal/buildinfo"
 	"github.com/uw-labs/lichen/internal/model"
 )
@@ -30,17 +29,18 @@ func Extract(ctx context.Context, paths ...string) ([]model.BuildInfo, error) {
 }
 
 // verifyExtracted ensures all paths requests are covered by the parsed output
-func verifyExtracted(extracted []model.BuildInfo, requested []string) (err error) {
+func verifyExtracted(extracted []model.BuildInfo, requested []string) error {
 	buildInfos := make(map[string]struct{}, len(extracted))
+	errs := []error{}
 	for _, binary := range extracted {
 		buildInfos[binary.Path] = struct{}{}
 	}
 	for _, path := range requested {
 		if _, found := buildInfos[path]; !found {
-			err = multierror.Append(err, fmt.Errorf("modules could not be obtained from %[1]s (hint: run `go version -m %[1]q`)", path))
+			errs = append(errs, fmt.Errorf("modules could not be obtained from %[1]s (hint: run `go version -m %[1]q`)", path))
 		}
 	}
-	return
+	return errors.Join(errs...)
 }
 
 // goVersion runs `go version -m [paths ...]` and returns the output
@@ -50,7 +50,7 @@ func goVersion(ctx context.Context, paths []string) (string, error) {
 		return "", err
 	}
 
-	tempDir, err := ioutil.TempDir("", "lichen")
+	tempDir, err := os.MkdirTemp("", "lichen")
 	if err != nil {
 		return "", fmt.Errorf("failed to create temp directory: %w", err)
 	}
