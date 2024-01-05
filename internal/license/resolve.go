@@ -1,30 +1,20 @@
 package license
 
 import (
-	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"regexp"
 	"strings"
 
-	"github.com/google/licenseclassifier"
-	"github.com/uw-labs/lichen/internal/license/db"
+	classifier "github.com/google/licenseclassifier/v2"
+	"github.com/google/licenseclassifier/v2/assets"
 	"github.com/uw-labs/lichen/internal/model"
 )
 
 // Resolve inspects each module and determines what it is licensed under. The returned slice contains each
 // module enriched with license information.
 func Resolve(modules []model.Module, threshold float64) ([]model.Module, error) {
-	archiveFn := licenseclassifier.ArchiveFunc(func() ([]byte, error) {
-		f, err := db.Open()
-		if err != nil {
-			return nil, fmt.Errorf("failed to open license databse: %w", err)
-		}
-		defer f.Close()
-		return ioutil.ReadAll(f)
-	})
-
-	lc, err := licenseclassifier.New(threshold, archiveFn)
+	lc, err := assets.DefaultClassifier()
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +58,7 @@ func locateLicenses(path string) (lp []string, err error) {
 }
 
 // classify inspects each license file and classifies it
-func classify(lc *licenseclassifier.License, paths []string) ([]model.License, error) {
+func classify(lc *classifier.Classifier, paths []string) ([]model.License, error) {
 	licenses := make([]model.License, 0)
 	for _, p := range paths {
 		content, err := ioutil.ReadFile(p)
@@ -76,9 +66,9 @@ func classify(lc *licenseclassifier.License, paths []string) ([]model.License, e
 			return nil, err
 		}
 		hits := make(map[string]float64)
-		matches := lc.MultipleMatch(string(content), true)
-		for _, match := range matches {
-			if conf, found := hits[match.Name]; !found || match.Confidence > conf {
+		matches := lc.Match(content)
+		for _, match := range matches.Matches {
+			if conf, found := hits[match.Name]; match.MatchType != "Copyright" && (!found || match.Confidence > conf) {
 				hits[match.Name] = match.Confidence
 			}
 		}

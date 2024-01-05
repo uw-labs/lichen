@@ -62,31 +62,33 @@ We can run lichen on itself:
 
 ```
 $ lichen $GOPATH/bin/lichen
-github.com/cpuguy83/go-md2man/v2@v2.0.0-20190314233015-f79a8a8ca69d: MIT (allowed)
-github.com/google/goterm@v0.0.0-20190703233501-fc88cf888a3f: BSD-3-Clause (allowed)
-github.com/google/licenseclassifier@v0.0.0-20200402202327-879cb1424de0: Apache-2.0 (allowed)
+github.com/cpuguy83/go-md2man/v2@v2.0.1: MIT (allowed)
+github.com/davecgh/go-spew@v1.1.1: ISC (allowed)
+github.com/google/licenseclassifier/v2@v2.0.0: Apache-2.0 (allowed)
 github.com/hashicorp/errwrap@v1.0.0: MPL-2.0 (allowed)
-github.com/hashicorp/go-multierror@v1.1.0: MPL-2.0 (allowed)
-github.com/lucasb-eyer/go-colorful@v1.0.3: MIT (allowed)
-github.com/mattn/go-isatty@v0.0.12: MIT (allowed)
-github.com/muesli/termenv@v0.5.2: MIT (allowed)
-github.com/russross/blackfriday/v2@v2.0.1: BSD-2-Clause (allowed)
-github.com/sergi/go-diff@v1.0.0: MIT (allowed)
-github.com/shurcooL/sanitized_anchor_name@v1.0.0: MIT (allowed)
-github.com/urfave/cli/v2@v2.2.0: MIT (allowed)
-golang.org/x/sys@v0.0.0-20200116001909-b77594299b42: BSD-3-Clause (allowed)
-gopkg.in/yaml.v2@v2.3.0: Apache-2.0, MIT (allowed)
+github.com/hashicorp/go-multierror@v1.1.1: MPL-2.0 (allowed)
+github.com/lucasb-eyer/go-colorful@v1.2.0: MIT (allowed)
+github.com/mattn/go-isatty@v0.0.14: MIT (allowed)
+github.com/mattn/go-runewidth@v0.0.13: MIT (allowed)
+github.com/muesli/termenv@v0.11.0: MIT (allowed)
+github.com/rivo/uniseg@v0.2.0: MIT (allowed)
+github.com/russross/blackfriday/v2@v2.1.0: BSD-2-Clause (allowed)
+github.com/sergi/go-diff@v1.1.0: MIT (allowed)
+github.com/urfave/cli/v2@v2.4.0: MIT (allowed)
+golang.org/x/sys@v0.0.0-20210630005230-0f9fa26af87c: BSD-3-Clause (allowed)
+gopkg.in/yaml.v2@v2.4.0: Apache-2.0, MIT (allowed)
 ```
 
 ...and using a custom template:
 
 ```
 $ lichen --template="{{range .Modules}}{{range .Module.Licenses}}{{.Name | printf \"%s\n\"}}{{end}}{{end}}" $GOPATH/bin/lichen | sort | uniq -c | sort -nr
-   8 MIT
-   2 MPL-2.0
-   2 BSD-3-Clause
-   2 Apache-2.0
-   1 BSD-2-Clause
+      9 MIT
+      2 MPL-2.0
+      2 Apache-2.0
+      1 ISC
+      1 BSD-3-Clause
+      1 BSD-2-Clause
 ```
 
 ## Config
