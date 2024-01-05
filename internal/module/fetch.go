@@ -10,7 +10,6 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/hashicorp/go-multierror"
 	"github.com/uw-labs/lichen/internal/model"
 )
 
@@ -75,15 +74,16 @@ func Fetch(ctx context.Context, refs []model.ModuleReference) ([]model.Module, e
 	return modules, nil
 }
 
-func verifyFetched(fetched []model.Module, requested []model.ModuleReference) (err error) {
+func verifyFetched(fetched []model.Module, requested []model.ModuleReference) error {
 	fetchedRefs := make(map[model.ModuleReference]struct{}, len(fetched))
+	errs := []error{}
 	for _, module := range fetched {
 		fetchedRefs[module.ModuleReference] = struct{}{}
 	}
 	for _, ref := range requested {
 		if _, found := fetchedRefs[ref]; !found {
-			err = multierror.Append(err, fmt.Errorf("module %s could not be resolved", ref))
+			errs = append(errs, fmt.Errorf("module %s could not be resolved", ref))
 		}
 	}
-	return
+	return errors.Join(errs...)
 }

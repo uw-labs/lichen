@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/hashicorp/go-multierror"
 	"github.com/muesli/termenv"
 	"github.com/urfave/cli/v2"
 	"github.com/uw-labs/lichen/internal/scan"
@@ -88,13 +87,13 @@ func run(c *cli.Context) error {
 		return fmt.Errorf("failed to write results: %w", err)
 	}
 
-	var rErr error
+	errs := []error{}
 	for _, m := range summary.Modules {
 		if !m.Allowed() {
-			rErr = multierror.Append(rErr, fmt.Errorf("%s: %s", m.Module.ModuleReference, m.ExplainDecision()))
+			errs = append(errs, fmt.Errorf("%s: %s", m.Module.ModuleReference, m.ExplainDecision()))
 		}
 	}
-	return rErr
+	return errors.Join(errs...)
 }
 
 func parseConfig(path string) (scan.Config, error) {
