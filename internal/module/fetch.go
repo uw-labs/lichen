@@ -54,7 +54,7 @@ func Fetch(ctx context.Context, refs []model.ModuleReference) ([]model.Module, e
 			if errors.Is(err, io.EOF) {
 				break
 			}
-			return nil, err
+			return nil, fmt.Errorf("failed to decode JSON output: %w, value: %s", err, string(out))
 		}
 		modules = append(modules, m)
 	}
