@@ -27,8 +27,8 @@ type ModuleReference struct {
 }
 
 // pathRgx covers
-//  - unix paths: ".", "..", prefixed "./", prefixed "../", prefixed "/"
-//  - windows paths: ".", "..", prefixed ".\", prefixed "..\", prefixed "<drive>:\"
+//   - unix paths: ".", "..", prefixed "./", prefixed "../", prefixed "/"
+//   - windows paths: ".", "..", prefixed ".\", prefixed "..\", prefixed "<drive>:\"
 var pathRgx = regexp.MustCompile(`^(\.\.?($|/|\\)|/|[A-Za-z]:\\)`)
 
 // IsLocal returns true if the module reference points to a local path

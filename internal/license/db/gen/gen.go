@@ -24,13 +24,13 @@ var archive = []byte(%q)
 `
 
 func run() error {
-	f, err := os.Open(os.Args[1])
+	f, err := os.Open(os.Args[1]) // #nosec G703
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
-	w, err := os.Create(os.Args[2])
+	w, err := os.Create(os.Args[2]) // #nosec G703
 	if err != nil {
 		return err
 	}
