@@ -42,7 +42,7 @@ func Run(ctx context.Context, conf Config, binPaths ...string) (Summary, error) 
 	// evaluate the modules and sort by path
 	results := evaluate(conf, binaries, modules)
 	sort.Slice(results, func(i, j int) bool {
-		return results[i].Module.Path < results[j].Module.Path
+		return results[i].Path < results[j].Path
 	})
 
 	return Summary{
@@ -83,7 +83,7 @@ func applyOverrides(modules []model.Module, overrides []Override) []model.Module
 	}
 
 	for i, mod := range modules {
-		if repl, found := replacements[mod.ModuleReference.Path]; found {
+		if repl, found := replacements[mod.Path]; found {
 			// if an explicit version is configured, only apply the override if the module version matches
 			if repl.version != "" && repl.version != mod.Version {
 				continue
